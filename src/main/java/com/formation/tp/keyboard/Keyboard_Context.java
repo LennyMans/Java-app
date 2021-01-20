@@ -5,9 +5,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayDeque;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class Keyboard_Context {
+
+    // -- CONS
+    private static int ref_Int_TimeToSleep_Engine = 500;
 
     // -- VARS
     private final ArrayDeque <String> ref_ArrayDeque_KeyboardEntry = new ArrayDeque<>();
@@ -28,6 +34,13 @@ public class Keyboard_Context {
     // -- STREAM
     private InputStream ref_InputStream = System.in;
     private OutputStream ref_OutputStream = System.out;
+
+    // -- PROTOCOLE SPECIFICATION
+    private static Pattern ref_Pattern_InputVerification
+                = Pattern.compile("^CustomerFirstName=([A-Z]{1}[a-z]{1,20}),CustomerName=([A-Z]{1}[a-z]{1,20})$");
+
+    private static String ref_String_Response_Ok = "Ack receive";
+    private static String ref_String_Response_Nok = "Ack error";
 
 
 
@@ -103,12 +116,36 @@ public class Keyboard_Context {
 
     }
 
+    private boolean verifyInput(String ref_String_ToCheck){
+
+        // -- Check & commit
+        return ref_Pattern_InputVerification.matcher(ref_String_ToCheck).find();
+
+    }
 
     // -- OUTER CALLBACK -----------------------------------------------------------------
 
     public void setEngine(String ref_Instruction){
 
         ref_String_EngineStatus = ref_Instruction;
+
+    }
+
+
+    // -- UTILITARY ----------------------------------------------------------------------
+
+
+
+    public void sleepMyFriend(int ref_Int_TimeToSleep){
+
+        try {
+
+            Thread.sleep(ref_Int_TimeToSleep);
+
+        } catch (InterruptedException ref_InterruptedException) {
+
+            ref_InterruptedException.printStackTrace();
+        }
 
     }
 
@@ -134,18 +171,16 @@ public class Keyboard_Context {
          while(ref_String_EngineStatus.equals(ref_String_Status_Kill) != Boolean.TRUE){
 
              // -- Sleep
-             try {  Thread.sleep(1000);
-             } catch (InterruptedException ref_InterruptedException) { ref_InterruptedException.printStackTrace(); }
+             Keyboard_Context.this.sleepMyFriend(ref_Int_TimeToSleep_Engine);
 
-             System.err.println("I AM IDLE");
-
+             // -- Log
+             System.err.println("ThreadEngine_KeyboardContext - IDLE");
 
              // -- LOOP START STOP
              while(ref_String_EngineStatus.equals(ref_String_Status_Stop) != Boolean.TRUE){
 
                  // -- Sleep
-                 try {  Thread.sleep(1000);
-                 } catch (InterruptedException ref_InterruptedException) { ref_InterruptedException.printStackTrace(); }
+                 Keyboard_Context.this.sleepMyFriend(ref_Int_TimeToSleep_Engine);
 
                  // -- Work
                  String ref_String_Read = Keyboard_Context.this.readInputStream();
@@ -158,31 +193,25 @@ public class Keyboard_Context {
 
                  }
 
-                 if(ref_String_Read.equals("STOP")){
+                 // -- Log
+                 System.err.println("ThreadEngine_KeyboardContext - Sentence Receive:".concat(ref_String_Read));
 
-                     Keyboard_Context.this.writeOutputStream("Goodbye");
-                     System.exit(0);
+                 // -- Check & Commit
+                 if(Keyboard_Context.this.verifyInput(ref_String_Read) == Boolean.TRUE){
+
+                     // -- Commit
+                     ref_ArrayDeque_KeyboardEntry.add(ref_String_Read);
 
                  }
-
-                 // -- Commit
-                 Keyboard_Context.this.writeOutputStream("Hello, tu m'as envoyé:" + ref_String_Read);
-
+                 
              }
-
 
 
          }
 
-
-
-
      }
 
-
-
     }
-
 
 
 }
