@@ -16,6 +16,7 @@ public class Keyboard_Context {
     private static int ref_Int_TimeToSleep_Engine = 500;
 
     // -- VARS
+    final private static Object ref_Object_Lock_ArrayDeque_Input = new Object();
     private final ArrayDeque <String> ref_ArrayDeque_KeyboardEntry = new ArrayDeque<>();
     private final ThreadEngine_KeyboardContext ref_ThreadEngine_KeyboardContext = new ThreadEngine_KeyboardContext();
 
@@ -123,11 +124,42 @@ public class Keyboard_Context {
 
     }
 
+    private void add_UserInput(String ref_String_Read){
+
+        // -- Sync
+        synchronized (ref_Object_Lock_ArrayDeque_Input){
+
+            // -- Commit
+            ref_ArrayDeque_KeyboardEntry.add(ref_String_Read);
+
+        }
+
+    }
+
+
     // -- OUTER CALLBACK -----------------------------------------------------------------
 
     public void setEngine(String ref_Instruction){
 
         ref_String_EngineStatus = ref_Instruction;
+
+    }
+
+    public String get_UserInput(){
+
+        // -- Init
+        String ref_String_ToCommit = null;
+
+        // -- Sync
+        synchronized (ref_Object_Lock_ArrayDeque_Input){
+
+            // -- Work
+            ref_String_ToCommit = ref_ArrayDeque_KeyboardEntry.poll();
+
+        }
+
+        // -- Commit
+        return ref_String_ToCommit;
 
     }
 
@@ -194,16 +226,24 @@ public class Keyboard_Context {
                  }
 
                  // -- Log
-                 System.err.println("ThreadEngine_KeyboardContext - Sentence Receive:".concat(ref_String_Read));
+              //   System.err.println("ThreadEngine_KeyboardContext - Sentence Receive:".concat(ref_String_Read));
 
                  // -- Check & Commit
                  if(Keyboard_Context.this.verifyInput(ref_String_Read) == Boolean.TRUE){
 
                      // -- Commit
-                     ref_ArrayDeque_KeyboardEntry.add(ref_String_Read);
+                     Keyboard_Context.this.add_UserInput(ref_String_Read);
+
+                     // -- Commit response to remote end
+                     Keyboard_Context.this.writeOutputStream(ref_String_Response_Ok);
+
+                 }else{
+
+                     // -- Commit response to remote end
+                     Keyboard_Context.this.writeOutputStream(ref_String_Response_Nok);
 
                  }
-                 
+
              }
 
 
