@@ -20,6 +20,7 @@ public class Color_Ticket {
     final public static String ref_String_Key_Color = "ref_String_Key_Color";
 
     // -- REF
+    final private Object ref_Object_Lock_HolderValue = new Object();
     final private HashMap<String, String> ref_HashMap_HolderValue = new HashMap<>();
 
 
@@ -53,8 +54,13 @@ public class Color_Ticket {
         // -- Init
         String ref_String_Value = null;
 
-        // -- Work
-        ref_String_Value = ref_HashMap_HolderValue.get(ref_String_getValue_Key);
+        // -- Sync
+        synchronized (this.ref_Object_Lock_HolderValue){
+
+            // -- Work
+            ref_String_Value = ref_HashMap_HolderValue.get(ref_String_getValue_Key);
+
+        }
 
         // -- Commit
         return ref_String_Value;
@@ -67,8 +73,13 @@ public class Color_Ticket {
 
     public void setValue (String ref_String_setValue_Key, String ref_String_setValue_Value) {
 
-        // -- Work
-        ref_HashMap_HolderValue.put(ref_String_setValue_Key, ref_String_setValue_Value);
+        // -- Sync
+        synchronized (this.ref_Object_Lock_HolderValue){
+
+            // -- Work
+            ref_HashMap_HolderValue.put(ref_String_setValue_Key, ref_String_setValue_Value);
+
+        }
 
     }
 
