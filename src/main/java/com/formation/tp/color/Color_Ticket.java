@@ -9,13 +9,13 @@ public class Color_Ticket {
     final public String ref_String_Value_Default = UUID.randomUUID().toString();
 
     final public static String ref_String_Key_Status = "ref_String_Key_Status";
-        final public String ref_String_Value_Status_Create = "ref_String_Value_Status_Create";
-        final public String ref_String_Value_Status_Complete = "ref_String_Value_Status_Complete";
-        final public String ref_String_Value_Status_Refused = "ref_String_Value_Status_Refused";
+        final static public String ref_String_Value_Status_Create = "ref_String_Value_Status_Create";
+        final static public String ref_String_Value_Status_Complete = "ref_String_Value_Status_Complete";
+        final static public String ref_String_Value_Status_Refused = "ref_String_Value_Status_Refused";
 
 
     final public static String ref_String_Key_Refused_Reason = "ref_String_Key_Refused_Reason";
-    final public String ref_String_Value_Refused_Reason = "ref_String_Value_Refused_Reason";
+    final static public String ref_String_Value_Refused_Reason_Default = "ref_String_Value_Refused_Reason_Default";
 
     final public static String ref_String_Key_Color = "ref_String_Key_Color";
 

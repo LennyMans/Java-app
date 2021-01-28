@@ -2,6 +2,9 @@ package com.formation.tp.color;
 
 import java.util.ArrayDeque;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 public class Color_Context {
 
@@ -81,13 +84,19 @@ public class Color_Context {
 
     // -- INNER CALLBACK ---------------------------------------------------------------------
 
-    private Color_Ticket poll_ColorTicket () {
+    protected Color_Ticket poll_ColorTicket () {
 
         synchronized (this.ref_Object_Lock) {
 
             return ref_ArrayDeque_Color_Ticket.poll();
 
         }
+    }
+
+    protected FutureTask<String> get_FutureTask_Execute_Resquest () {
+
+        return new FutureTask<String>(new Callable_Remote_Color());
+
     }
 
 
@@ -103,6 +112,9 @@ public class Color_Context {
         public final String ref_String_Engine_State_Alive = UUID.randomUUID().toString();
         public final String ref_String_Engine_State_Dead = UUID.randomUUID().toString();
         public String ref_String_Engine_State_Life;
+
+        // -- VARS ENGINE
+        private int ref_Time_To_Sleep = 500;
 
 
         // -- CONSTRUCTOR ---------------------------------------------------------------------
@@ -130,21 +142,137 @@ public class Color_Context {
         @Override
         public void run () {
 
+            // -- Life Loop
             while (ref_String_Engine_State_Life.equals(ref_String_Engine_State_Alive)) {
 
+                // -- State Loop
+                while (ref_String_Engine_State.equals(ref_String_Engine_State_Enabled)) {
+
+                    // -- Retrieve
+                    Color_Ticket ref_Color_Ticket_Unit = Color_Context.this.get_ColorTicket();
+
+                    // -- Check && Set
+                    if (ref_Color_Ticket_Unit != null) {
+
+                        new Thread(new Runnable_Build_Ticket(ref_Color_Ticket_Unit)).start();
+
+                    }
+
+
+                    // -- Sleep
+                    this.sleep();
+
+                }
+
+                // -- Sleep
+                this.sleep();
+            }
+
+        }
+
+        // -- UTILS ----------------------------------------------------------------------------
+
+        public void sleep () {
+
+            this.sleep(ref_Time_To_Sleep);
+
+        }
+
+        public void sleep (int ref_Int_Time_To_Sleep) {
+
+            try {
+
+                Thread.sleep(ref_Int_Time_To_Sleep);
+
+            } catch (InterruptedException ref_InterrupedException) {
+
+                ref_InterrupedException.printStackTrace();
 
             }
 
         }
 
 
-
     }
 
 
+    // -- CLASS ------------------------------------------------------------------------------
+
+    private class Runnable_Build_Ticket implements Runnable {
+
+        // -- VARS
+        private final Color_Ticket ref_Color_Ticket;
+
+
+        // -- CONSTRUCTOR ---------------------------------------------------------------------
+
+        public Runnable_Build_Ticket (Color_Ticket ref_Color_Ticket) {
+
+            this.ref_Color_Ticket = ref_Color_Ticket;
+
+        }
+
+
+        // -- IMPLEMENTATION ---------------------------------------------------------------------
+
+        @Override
+        public void run() {
+
+            // -- Create
+            FutureTask<String> ref_Future_Task_Unit = Color_Context.this.get_FutureTask_Execute_Resquest();
+
+            // -- Start
+            try {
+
+                // -- Get
+                String ref_String_Color = ref_Future_Task_Unit.get();
+
+                // -- Check
+                String ref_String_Processing_Result = (ref_String_Color == null)
+                        ? Color_Ticket.ref_String_Value_Status_Refused
+                        : Color_Ticket.ref_String_Value_Status_Complete;
+
+                String ref_String_Processing_Refused_Reason = (ref_String_Processing_Result.equals(Color_Ticket.ref_String_Value_Status_Refused))
+                        ? Color_Ticket.ref_String_Value_Refused_Reason_Default
+                        : null;
+
+                // -- Set
+                switch (ref_String_Processing_Result) {
+
+                    case Color_Ticket.ref_String_Value_Status_Complete:
+
+                        // -- Set
+                        this.ref_Color_Ticket.setValue(Color_Ticket.ref_String_Key_Color, ref_String_Color);
+                        this.ref_Color_Ticket.setValue(Color_Ticket.ref_String_Key_Status, Color_Ticket.ref_String_Value_Status_Complete);
+
+                        break;
+
+                    case Color_Ticket.ref_String_Value_Status_Refused:
+
+                        // -- Set
+                        this.ref_Color_Ticket.setValue(Color_Ticket.ref_String_Key_Refused_Reason, ref_String_Processing_Refused_Reason);
+                        this.ref_Color_Ticket.setValue(Color_Ticket.ref_String_Key_Status, Color_Ticket.ref_String_Value_Status_Refused);
+
+                        break;
+                }
+
+            } catch (InterruptedException | ExecutionException ref_Exception) {
+
+                ref_Exception.printStackTrace();
+
+            }
+
+        }
+    }
+
+    private class Callable_Remote_Color implements Callable<String> {
 
 
 
-
+        @Override
+        public String call() throws Exception {
+            return "black";
+        }
+    }
 
 }
