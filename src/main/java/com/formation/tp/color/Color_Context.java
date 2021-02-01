@@ -1,5 +1,6 @@
 package com.formation.tp.color;
 
+import com.formation.tp.Network.Callable_Remote_Color;
 import com.formation.tp.keyboard.Keyboard_Context;
 
 import java.util.ArrayDeque;
@@ -23,9 +24,9 @@ public class Color_Context {
 
     // -- STATUS ENGINE
     private static int ref_Int_TimeToSleep_Engine = 500;
-    private static final String ref_String_Status_Start = UUID.randomUUID().toString();
-    private static final String ref_String_Status_Stop = UUID.randomUUID().toString();
-    private static final String ref_String_Status_Kill = UUID.randomUUID().toString();
+        public static final String ref_String_Status_Start = UUID.randomUUID().toString();
+        public static final String ref_String_Status_Stop = UUID.randomUUID().toString();
+        public static final String ref_String_Status_Kill = UUID.randomUUID().toString();
 
     private String ref_String_EngineStatus = Color_Context.ref_String_Status_Stop;
 
@@ -110,11 +111,6 @@ public class Color_Context {
         }
     }
 
-    protected FutureTask<String> get_FutureTask_Execute_Resquest () {
-
-        return new FutureTask<String>(new Callable_Remote_Color());
-
-    }
 
 
 
@@ -132,7 +128,6 @@ public class Color_Context {
         }
 
     }
-
 
 
     // -- ENGINE -----------------------------------------------------------------------------
@@ -158,7 +153,7 @@ public class Color_Context {
                     while(ref_String_EngineStatus.equals(ref_String_Status_Stop) != Boolean.TRUE){
 
                                 // -- Retrieve
-                                Color_Ticket ref_Color_Ticket_Unit = Color_Context.this.get_ColorTicket();
+                                Color_Ticket ref_Color_Ticket_Unit = Color_Context.this.poll_ColorTicket();
 
                                 // -- Check && Set
                                 if (ref_Color_Ticket_Unit != null) {
@@ -229,7 +224,7 @@ public class Color_Context {
         public void run() {
 
             // -- Create
-            FutureTask<String> ref_Future_Task_Unit = Color_Context.this.get_FutureTask_Execute_Resquest();
+            FutureTask<String> ref_Future_Task_Unit = Callable_Remote_Color.get_FutureTask_Execute_Resquest();
 
             // -- Start
             try {
@@ -275,14 +270,5 @@ public class Color_Context {
         }
     }
 
-    private class Callable_Remote_Color implements Callable<String> {
-
-
-
-        @Override
-        public String call() throws Exception {
-            return "black";
-        }
-    }
 
 }

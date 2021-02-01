@@ -24,9 +24,9 @@ public class Keyboard_Context {
     private final ThreadEngine_KeyboardContext ref_ThreadEngine_KeyboardContext = new ThreadEngine_KeyboardContext();
 
     // -- STATUS ENGINE
-    private static final String ref_String_Status_Start = UUID.randomUUID().toString();
-    private static final String ref_String_Status_Stop = UUID.randomUUID().toString();
-    private static final String ref_String_Status_Kill = UUID.randomUUID().toString();
+    public static final String ref_String_Status_Start = UUID.randomUUID().toString();
+    public static final String ref_String_Status_Stop = UUID.randomUUID().toString();
+    public static final String ref_String_Status_Kill = UUID.randomUUID().toString();
 
     private String ref_String_EngineStatus = Keyboard_Context.ref_String_Status_Stop;
 
@@ -43,7 +43,6 @@ public class Keyboard_Context {
     private static String ref_String_Response_Nok_Busy = "Ack error - To busy, please retry again";
 
 
-
     // -- CONSTRUCTOR --------------------------------------------------------------------
 
     public Keyboard_Context (){
@@ -52,7 +51,6 @@ public class Keyboard_Context {
         this.ref_ThreadEngine_KeyboardContext.start();
 
     }
-
 
 
     // -- INNER CALLBACK -----------------------------------------------------------------
@@ -190,7 +188,6 @@ public class Keyboard_Context {
         }
 
     }
-
 
 
     // -- CLASS --------------------------------------------------------------------------

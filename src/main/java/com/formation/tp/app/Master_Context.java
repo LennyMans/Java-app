@@ -25,8 +25,8 @@ public class Master_Context {
         this.ref_ColorContext = new Color_Context();
 
         // -- Start engines
-        this.ref_KeyBoardContext.setEngine(Keyboard_Context.ref_String_Instruction_Start);
-        //this.ref_ColorContext.setEngine(Color_Context)
+        this.ref_KeyBoardContext.setEngine(Keyboard_Context.ref_String_Status_Start);
+        this.ref_ColorContext.setEngine(Color_Context.ref_String_Status_Start);
 
     }
 
