@@ -41,6 +41,7 @@ public class Color_Context {
     }
 
 
+
     // -- INIT -------------------------------------------------------------------------------
 
     public void init () {
@@ -63,18 +64,13 @@ public class Color_Context {
 
         // -- Inject
         this.ref_Color_Ticket_Engine = new Color_Ticket_Engine();
-
-    }
-
-
-    // -- OUTER CALLBACK ---------------------------------------------------------------------
-
-    public void start_Context_Engine () {
-
-        // -- Start
         this.ref_Color_Ticket_Engine.start();
 
     }
+
+
+
+    // -- OUTER CALLBACK ---------------------------------------------------------------------
 
     public Color_Ticket get_ColorTicket () {
 
@@ -100,6 +96,7 @@ public class Color_Context {
     }
 
 
+
     // -- INNER CALLBACK ---------------------------------------------------------------------
 
     protected Color_Ticket poll_ColorTicket () {
@@ -110,7 +107,6 @@ public class Color_Context {
 
         }
     }
-
 
 
 
@@ -128,6 +124,7 @@ public class Color_Context {
         }
 
     }
+
 
 
     // -- ENGINE -----------------------------------------------------------------------------
@@ -201,6 +198,7 @@ public class Color_Context {
     }
 
 
+
     // -- CLASS ------------------------------------------------------------------------------
 
     private class Runnable_Build_Ticket implements Runnable {
@@ -223,11 +221,17 @@ public class Color_Context {
         @Override
         public void run() {
 
+            // -- Set
+            ref_Color_Ticket.setValue(Color_Ticket.ref_String_Key_Status, Color_Ticket.ref_String_Value_Status_Treated);
+
             // -- Create
             FutureTask<String> ref_Future_Task_Unit = Callable_Remote_Color.get_FutureTask_Execute_Resquest();
 
             // -- Start
             try {
+
+                // -- Execute FutureTask
+                new Thread(ref_Future_Task_Unit).start();
 
                 // -- Get
                 String ref_String_Color = ref_Future_Task_Unit.get();

@@ -10,6 +10,7 @@ public class Color_Ticket {
 
     final public static String ref_String_Key_Status = "ref_String_Key_Status";
         final static public String ref_String_Value_Status_Create = "ref_String_Value_Status_Create";
+        final static public String ref_String_Value_Status_Treated = "ref_String_Value_Status_Treated";
         final static public String ref_String_Value_Status_Complete = "ref_String_Value_Status_Complete";
         final static public String ref_String_Value_Status_Refused = "ref_String_Value_Status_Refused";
 
