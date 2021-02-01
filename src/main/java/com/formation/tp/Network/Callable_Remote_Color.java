@@ -8,14 +8,31 @@ public class Callable_Remote_Color implements Callable<String> {
     @Override
     public String call() throws Exception {
 
-        // IMAGINONS APPL RESEAU OU BDD
-        String [] ref_Array_String = {"black","yellow","green","purple","pink","red"};
-        int ref_Int_Random = (int)(Math.random() * ref_Array_String.length);
+        // -- Init
+        String ref_String_To_Return = null;
 
-        Thread.sleep(3000);
+        // -- Work
+        /*
+       1)  Connection au serveur suivant:
+         ip 216.58.213.132
+         port 80
+
+        2) envoyé via le flux ouput la commande "/getMyFuckingColor"
+
+        3) stocké la reponse du flux input dans un tableau de byte
+
+        4 ) convertir en tronquant et gardant que les 30 premiers byte
+
+        5) les trandormer en string
+
+        6) renvoyé la string
+
+         */
+
+
 
         // -- Commit
-        return ref_Array_String[ref_Int_Random];
+        return ref_String_To_Return;
 
     }
 
