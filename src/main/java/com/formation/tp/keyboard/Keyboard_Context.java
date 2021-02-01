@@ -1,5 +1,7 @@
 package com.formation.tp.keyboard;
 
+import com.formation.tp.color.Color_Context;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,11 +29,6 @@ public class Keyboard_Context {
     private static final String ref_String_Status_Kill = UUID.randomUUID().toString();
 
     private String ref_String_EngineStatus = Keyboard_Context.ref_String_Status_Stop;
-
-    // -- INSTRUCTION
-    public static final String ref_String_Instruction_Start = UUID.randomUUID().toString();
-    public static final String ref_String_Instruction_Stop = UUID.randomUUID().toString();
-    private String ref_String_InstructionHolder = null;
 
     // -- STREAM
     private InputStream ref_InputStream = System.in;
@@ -174,31 +171,32 @@ public class Keyboard_Context {
 
     };
 
-    public void sleepMyFriend(int ref_Int_TimeToSleep){
+    public void sleep () {
+
+        this.sleep(ref_Int_TimeToSleep_Engine);
+
+    }
+
+    public void sleep (int ref_Int_Time_To_Sleep) {
 
         try {
 
-            Thread.sleep(ref_Int_TimeToSleep);
+            Thread.sleep(ref_Int_Time_To_Sleep);
 
-        } catch (InterruptedException ref_InterruptedException) {
+        } catch (InterruptedException ref_InterrupedException) {
 
-            ref_InterruptedException.printStackTrace();
+            ref_InterrupedException.printStackTrace();
+
         }
 
     }
+
 
 
     // -- CLASS --------------------------------------------------------------------------
 
     class ThreadEngine_KeyboardContext extends Thread{
 
-
-     // -- CONSTRUCTOR --------------------
-
-     public ThreadEngine_KeyboardContext(){
-
-
-     }
 
      // -- OVERRIDE ----------------------
 
@@ -209,7 +207,7 @@ public class Keyboard_Context {
          while(ref_String_EngineStatus.equals(ref_String_Status_Kill) != Boolean.TRUE){
 
              // -- Sleep
-             Keyboard_Context.this.sleepMyFriend(ref_Int_TimeToSleep_Engine);
+            Keyboard_Context.this.sleep(ref_Int_TimeToSleep_Engine);
 
              // -- Log
              System.err.println("ThreadEngine_KeyboardContext - IDLE");
@@ -218,7 +216,7 @@ public class Keyboard_Context {
              while(ref_String_EngineStatus.equals(ref_String_Status_Stop) != Boolean.TRUE){
 
                  // -- Sleep
-                 Keyboard_Context.this.sleepMyFriend(ref_Int_TimeToSleep_Engine);
+                 Keyboard_Context.this.sleep(ref_Int_TimeToSleep_Engine);
 
                  // -- Work
                  String ref_String_Read = Keyboard_Context.this.readInputStream();
@@ -295,6 +293,7 @@ public class Keyboard_Context {
          }
 
      }
+
 
     }
 

@@ -1,5 +1,7 @@
 package com.formation.tp.color;
 
+import com.formation.tp.keyboard.Keyboard_Context;
+
 import java.util.ArrayDeque;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -18,6 +20,15 @@ public class Color_Context {
 
     // -- REF ENGINE
     private Color_Ticket_Engine ref_Color_Ticket_Engine = null;
+
+    // -- STATUS ENGINE
+    private static int ref_Int_TimeToSleep_Engine = 500;
+    private static final String ref_String_Status_Start = UUID.randomUUID().toString();
+    private static final String ref_String_Status_Stop = UUID.randomUUID().toString();
+    private static final String ref_String_Status_Kill = UUID.randomUUID().toString();
+
+    private String ref_String_EngineStatus = Color_Context.ref_String_Status_Stop;
+
 
 
     // -- CONSTRUCTOR ------------------------------------------------------------------------
@@ -81,6 +92,12 @@ public class Color_Context {
 
     }
 
+    public void setEngine(String ref_Instruction){
+
+        ref_String_EngineStatus = ref_Instruction;
+
+    }
+
 
     // -- INNER CALLBACK ---------------------------------------------------------------------
 
@@ -100,81 +117,74 @@ public class Color_Context {
     }
 
 
+
+    // -- UTILS ------------------------------------------------------------------------------
+
+    public void sleepMyFriend(int ref_Int_TimeToSleep){
+
+        try {
+
+            Thread.sleep(ref_Int_TimeToSleep);
+
+        } catch (InterruptedException ref_InterruptedException) {
+
+            ref_InterruptedException.printStackTrace();
+        }
+
+    }
+
+
+
     // -- ENGINE -----------------------------------------------------------------------------
 
     private class Color_Ticket_Engine extends Thread {
 
-        // -- VARS
-        public final String ref_String_Engine_State_Enabled = UUID.randomUUID().toString();
-        public final String ref_String_Engine_State_Disabled = UUID.randomUUID().toString();
-        public String ref_String_Engine_State;
-
-        public final String ref_String_Engine_State_Alive = UUID.randomUUID().toString();
-        public final String ref_String_Engine_State_Dead = UUID.randomUUID().toString();
-        public String ref_String_Engine_State_Life;
-
         // -- VARS ENGINE
-        private int ref_Time_To_Sleep = 500;
-
-
-        // -- CONSTRUCTOR ---------------------------------------------------------------------
-
-        public Color_Ticket_Engine () {
-
-            this.init();
-
-        }
-
-
-        // -- INIT ----------------------------------------------------------------------------
-
-        public void init () {
-
-
-            // -- Set engine
-            ref_String_Engine_State_Life = ref_String_Engine_State_Alive;
-            ref_String_Engine_State = ref_String_Engine_State_Enabled;
-        }
+        private int ref_Int_TimeToSleep_Engine = 500;
 
 
         // -- IMPLEMENTATION ------------------------------------------------------------------
 
-        @Override
-        public void run () {
+        public void run(){
 
-            // -- Life Loop
-            while (ref_String_Engine_State_Life.equals(ref_String_Engine_State_Alive)) {
+            // -- Work
+            while(ref_String_EngineStatus.equals(ref_String_Status_Kill) != Boolean.TRUE){
 
-                // -- State Loop
-                while (ref_String_Engine_State.equals(ref_String_Engine_State_Enabled)) {
+                // -- Sleep
+               Color_Context.this.sleepMyFriend(ref_Int_TimeToSleep_Engine);
 
-                    // -- Retrieve
-                    Color_Ticket ref_Color_Ticket_Unit = Color_Context.this.get_ColorTicket();
 
-                    // -- Check && Set
-                    if (ref_Color_Ticket_Unit != null) {
+                    // -- LOOP START STOP
+                    while(ref_String_EngineStatus.equals(ref_String_Status_Stop) != Boolean.TRUE){
 
-                        new Thread(new Runnable_Build_Ticket(ref_Color_Ticket_Unit)).start();
+                                // -- Retrieve
+                                Color_Ticket ref_Color_Ticket_Unit = Color_Context.this.get_ColorTicket();
+
+                                // -- Check && Set
+                                if (ref_Color_Ticket_Unit != null) {
+
+                                    new Thread(new Runnable_Build_Ticket(ref_Color_Ticket_Unit)).start();
+
+                                }
+
+                                // -- Sleep
+                                this.sleep();
 
                     }
 
-
-                    // -- Sleep
-                    this.sleep();
-
-                }
-
                 // -- Sleep
                 this.sleep();
+
             }
 
         }
+
 
         // -- UTILS ----------------------------------------------------------------------------
 
         public void sleep () {
 
-            this.sleep(ref_Time_To_Sleep);
+            this.sleep(ref_Int_TimeToSleep_Engine);
 
         }
 
