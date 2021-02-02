@@ -1,5 +1,6 @@
 package com.formation.tp.app;
 
+import com.formation.tp.Network.Callable_Remote_Color;
 import com.formation.tp.color.Color_Context;
 import com.formation.tp.keyboard.Keyboard_Context;
 import com.formation.tp.test.Test_Session_10;
@@ -41,7 +42,8 @@ public class Master_Context {
             new Master_Context();
 
             // -- Faire no test
-            Master_Context.test();
+            //Master_Context.test();
+            Master_Context.serverCall();
     }
 
     // -- TEST -------------------------------------
@@ -50,5 +52,11 @@ public class Master_Context {
 
         new Test_Session_10().test();
 
+    }
+
+    // -- APPEL SERVER -------------------------------
+
+    public static void serverCall() {
+        new Callable_Remote_Color();
     }
 }
