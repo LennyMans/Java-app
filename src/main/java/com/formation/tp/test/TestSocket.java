@@ -3,6 +3,13 @@ package com.formation.tp.test;
 import java.net.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 // -- Work
         /*
@@ -26,6 +33,7 @@ public class TestSocket {
 
     // -- CONS
     public final static String ref_String_Command = "/getMyFuckingColor";
+    public final static Path ref_Path_File_Conf = FileSystems.getDefault().getPath("PERSISTANCE", "CONNECTION8CONFIGURATION.txt");
 
     // -- VARS
     private String ref_String_Hostname;
@@ -61,7 +69,74 @@ public class TestSocket {
         7) et la suite du programme suit sont cours
         */
 
+        // -- VARS
+        String ref_String_Data_Conf = "";
+        ArrayList<String> ref_ArrayList_Conf = new ArrayList<>();
 
+        // -- Fake Array pour continuer
+        ArrayList<String> ref_ArrayList_Fake = new ArrayList<>(Arrays.asList("KEY_IP=216.58.213.132,KEY_PORT=80", "KEY_IP=216.58.213.132,KEY_PORT=80"));
+
+        // -- VARS - Declare path of the conf file
+        String ref_String_File_Conf_Path = "./PERSISTENCE/CONNECTION_CONFIGURATION.txt";
+
+        // -- Regex IP
+        final String ref_String_Regex_Verification =
+                "^KEY_IP=(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),KEY_PORT=()([1-9]|[1-5]?[0-9]{2,4}|6[1-4][0-9]{3}|65[1-4][0-9]{2}|655[1-2][0-9]|6553[1-5])$";
+
+        // -- INIT
+        Pattern ref_Pattern  = Pattern.compile(ref_String_Regex_Verification);
+        Matcher ref_Match = null;
+
+        // -- Init conf file
+        File ref_File_Conf = new File(ref_String_File_Conf_Path);
+
+        try {
+            // -- Init Buffred reader
+            BufferedReader ref_Buffered_Reader_File_Conf = new BufferedReader(new FileReader(ref_File_Conf));
+
+            // -- Declare a new String Builder
+            //StringBuilder ref_StringBuilder_File_Conf = new StringBuilder();
+
+            // -- Declare variable string read line
+            String ref_String_Read_Line;
+
+            // -- Loop process
+            while(( ref_String_Read_Line = ref_Buffered_Reader_File_Conf.readLine()) != null) {
+
+                // -- Verif if the line match with the pattern
+                ref_Match = ref_Pattern.matcher(ref_String_Read_Line);
+
+                // -- Log
+                System.out.println("IS MATCH ? " + ref_Match.find());
+
+                if (ref_Match.find() == Boolean.TRUE) {
+
+                    System.out.println("It's okay");
+                    // -- Commit
+                    //ref_StringBuilder_File_Conf.append(ref_String_Read_Line).append("\n");
+                    ref_ArrayList_Conf.add(ref_Buffered_Reader_File_Conf.readLine());
+
+                } else {
+
+                    System.out.println("marche pas gayzou");
+
+                }
+            }
+
+            // -- Close buffer
+            ref_Buffered_Reader_File_Conf.close();
+
+            // -- Output les data dans la variable
+            //ref_String_Data_Conf = ref_StringBuilder_File_Conf.toString();
+
+            // -- Log
+            //System.out.println(ref_String_Data_Conf);
+            System.out.println(ref_ArrayList_Conf);
+
+        } catch (IOException ref_Exeception) {
+            System.out.println("ouuups, Il y a un problème");
+            ref_Exeception.printStackTrace();
+        }
     }
 
     private StringBuffer get_Data_From_Google(){
@@ -70,18 +145,20 @@ public class TestSocket {
         StringBuffer ref_StringBuffer_Data = new StringBuffer();
 
         try {
-            // -- 1
+
             // -- INIT Socket
             ref_Socket = new Socket(ref_String_IP, ref_int_Port);
 
-            // Init input
+            // Init input stream
             InputStream ref_Input_Stream_Socket = ref_Socket.getInputStream();
+
             // Mise en place du filtre
             InputStreamReader ref_Input_Stream_Socket_Filter = new InputStreamReader(ref_Input_Stream_Socket);
-            // ajout du filtre buffred
+
+            // ajout du filtre buffer
             BufferedReader ref_Buffered_Reader_Socket = new BufferedReader(ref_Input_Stream_Socket_Filter);
 
-            // -- Envoyé un random au serveur
+            // -- Envoie d'un random au serveur
             ref_Socket.getOutputStream().write("HELLO\n".getBytes(StandardCharsets.UTF_8));
             ref_Socket.getOutputStream().flush();
 
@@ -160,6 +237,9 @@ public class TestSocket {
 
         // -- Persist data in file system
         ref_TestSocket.persistInFile(ref_StringBuffer_Data_From_Google);
+
+        // -- Load configuration file
+        ref_TestSocket.load_Conf();
 
     }
 
