@@ -3,14 +3,15 @@ package com.formation.tp.test;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class Test_Explication_Regex {
 
 
     public static void main (String [] ref_Array_String_Arg){
 
-     test2();
 
+    test4();
 
 
     }
@@ -149,4 +150,62 @@ public class Test_Explication_Regex {
 
     }
 
+    public static void test4(){
+
+        String input = "KEY_IP=216.58.213.132,KEY_PORT=80";
+        String delimiter_a = ",";
+        String delimitier_b = "=";
+        String delimitier_c = ".";
+
+        String ip;
+        String port;
+
+        final String ref_String_Regex_Verification =
+                "^KEY_IP=([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}),KEY_PORT=([0-9]{1,5})$";
+
+        Pattern p = Pattern.compile(ref_String_Regex_Verification);
+        Matcher m = p.matcher(input);
+
+        if(m.find()){
+
+            // Decoupe 1 done ça KEY_IP=216.58.213.132
+            String [] arr =  input.split(delimiter_a);
+
+            String ip_dec = arr[0]; // KEY_IP=216.58.213.132
+            String port_dec = arr[1]; // KEY_PORT=80
+
+            // -- Decoupe ip donne ça 216.58.213.132
+            String [] arr2 =  ip_dec.split( delimitier_b);
+
+            String raw_ip = arr2[1]; // 216.58.213.132     c'est loffset 1
+
+
+            String [] arr_Ip =raw_ip.split(delimitier_c); // 216.58.213.132 devient [216][58][213][132]
+
+            int [] ref_Array_Int_Ip = Stream.of(arr_Ip).mapToInt((e) -> Integer.valueOf(e)).toArray();
+
+            boolean isIpgood =true;
+
+            for(int u :  ref_Array_Int_Ip){
+
+                if(u > 255  || u <1) {
+
+                    isIpgood = false;
+                    break;
+
+                }
+
+            }
+
+
+            // -- Verification ip
+
+
+            // -- Verification port
+
+        }
+
+
+
+    }
 }

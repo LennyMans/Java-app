@@ -67,6 +67,15 @@ public class TestSocket {
         5) On extrait les données
         6) ont set les variables  this.ref_String_IP  et this.ref_int_Port avec
         7) et la suite du programme suit sont cours
+
+
+        TIPS
+        // -- util
+        public boolean verifyIp(String ip){}
+        public boolean verifyPort(String port){}
+
+
+
         */
 
         // -- VARS
@@ -81,7 +90,7 @@ public class TestSocket {
 
         // -- Regex IP
         final String ref_String_Regex_Verification =
-                "^KEY_IP=(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),KEY_PORT=()([1-9]|[1-5]?[0-9]{2,4}|6[1-4][0-9]{3}|65[1-4][0-9]{2}|655[1-2][0-9]|6553[1-5])$";
+                "^KEY_IP=([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}),KEY_PORT=([0-9]{1,5})$";
 
         // -- INIT
         Pattern ref_Pattern  = Pattern.compile(ref_String_Regex_Verification);
@@ -138,6 +147,9 @@ public class TestSocket {
             ref_Exeception.printStackTrace();
         }
     }
+
+
+
 
     private StringBuffer get_Data_From_Google(){
 
