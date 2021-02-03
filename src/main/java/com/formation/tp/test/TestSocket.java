@@ -250,9 +250,6 @@ public class TestSocket {
         // -- Persist data in file system
         ref_TestSocket.persistInFile(ref_StringBuffer_Data_From_Google);
 
-        // -- Load configuration file
-        ref_TestSocket.load_Conf();
-
     }
 
 
