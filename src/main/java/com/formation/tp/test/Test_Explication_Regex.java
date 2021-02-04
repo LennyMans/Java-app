@@ -17,13 +17,13 @@ public class Test_Explication_Regex {
     public static void test1(){
 
         // -- INIT DATA
-        String ref_input = "WINNER-JesSuisUneLibellule-fWINNER_ViveLensWINNER54654654";
+        String ref_ref_String_Input = "WINNER-JesSuisUneLibellule-fWINNER_ViveLensWINNER54654654";
         String ref_String_Regex ="WINNER";
         StringBuilder ref_StringBuilder = new StringBuilder();
 
         // -- INIT REGEX
         Pattern ref_Pattern = Pattern.compile(ref_String_Regex);
-        Matcher ref_Matcher = ref_Pattern.matcher(ref_input);
+        Matcher ref_Matcher = ref_Pattern.matcher(ref_ref_String_Input);
 
         // -- INIT LIST
         ArrayList<int[]> ref_ArrayList_PositionToRemove = new ArrayList<>();
@@ -62,7 +62,7 @@ public class Test_Explication_Regex {
             }else if (ref_Int_A == ref_ArrayList_PositionToRemove.size() -1){
 
                 ref_Array_Unit[0] = ref_Array_ToRemoveUnit[1];
-                ref_Array_Unit[1] = ref_input.length();
+                ref_Array_Unit[1] = ref_ref_String_Input.length();
 
             // -- CASE MATCH ENTRE DEBUT ET FIN DE MATCH
             }else{
@@ -80,7 +80,7 @@ public class Test_Explication_Regex {
         // -- COPY ALL THE POSITION
         for(int[] ref_Int_Unit : ref_ArrayList_PositionToCopy){
 
-            ref_StringBuilder.append(ref_input.substring(ref_Int_Unit[0], ref_Int_Unit[1]));
+            ref_StringBuilder.append(ref_ref_String_Input.substring(ref_Int_Unit[0], ref_Int_Unit[1]));
 
         }
 
@@ -96,7 +96,7 @@ public class Test_Explication_Regex {
 
 
        // -- INIT DATA
-        String ref_input = "WINNER-JesSuisUneLibellule-fWINNER_ViveLensWINNER54654654";
+        String ref_ref_String_Input = "WINNER-JesSuisUneLibellule-fWINNER_ViveLensWINNER54654654";
         String ref_String_Regex ="WINNER";
         StringBuilder ref_StringBuilder = new StringBuilder();
 
@@ -105,7 +105,7 @@ public class Test_Explication_Regex {
         Matcher ref_Matcher;
 
         // -- APPLY REGEX AND EXTRACT
-        ref_StringBuilder.append(ref_input);
+        ref_StringBuilder.append(ref_ref_String_Input);
 
         // -- WORk
         while(true){
@@ -135,13 +135,13 @@ public class Test_Explication_Regex {
     public static void test3(){
 
         // -- INIT DATA
-        String ref_input ="WINNER";
+        String ref_ref_String_Input ="WINNER";
         String ref_String_Regex = "^(WINNER)$";
 
 
         // -- INIT REGEX
         Pattern ref_Pattern = Pattern.compile(ref_String_Regex);
-        Matcher ref_Matcher =  ref_Pattern.matcher(ref_input);
+        Matcher ref_Matcher =  ref_Pattern.matcher(ref_ref_String_Input);
 
 
 
@@ -149,29 +149,51 @@ public class Test_Explication_Regex {
     }
 
     public static void test4(){
-
-        String input = "KEY_IP=216.58.213.132,KEY_PORT=80";
-        String delimiter_a = ",";
-        String delimitier_b = "=";
-        String delimitier_c = ".";
-
-        String ip;
-        String port;
-
+        // -- Cons
         final String ref_String_Regex_Verification =
                 "^KEY_IP=([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}),KEY_PORT=([0-9]{1,5})$";
 
-        Pattern p = Pattern.compile(ref_String_Regex_Verification);
-        Matcher m = p.matcher(input);
+        String ref_String_Input = "KEY_IP=216.58.213.132,KEY_PORT=80";
 
-        if(m.find()){
+        String ref_String_Delimiter_Comma = ",";
+        String ref_String_Delimiter_Equals = "=";
+        String ref_String_Delimiter_Dot = ".";
+
+        // -- Init regex
+        Pattern ref_Pattern = Pattern.compile(ref_String_Regex_Verification);
+        Matcher ref_Matcher = ref_Pattern.matcher(ref_String_Input);
+
+
+        // -- Init frame split
+        String [] ref_Array_String_Array_Frame_Splitted; // KEY_IP=216.58.213.132,KEY_PORT=80
+
+        // -- Init key/value split ip
+        String [] ref_Array_String_KeyValue_Ip; // KEY_IP=216.58.213.132
+
+        // -- Init split ip [xxx][xxx][xxx][xxx]
+        String [] ref_Array_String_Ip_Splitted; // 216.58.213.132 soit ref_Array_String_KeyValue_Ip[1]
+
+        // ... verif ip inside code
+
+
+        // -- Init key/value split port
+        String [] ref_Array_String_KeyValue_Port; // KEY_PORT=80
+
+        // -- Init verif port xxxxx
+        String ref_String_Port; // ref_Array_String_KeyValue_Port[1]
+
+
+        // -- Check Ip
+        if(ref_Matcher.find()){
             System.out.println("Regex verif ok");
 
             // Decoupe 1 done ça KEY_IP=216.58.213.132
-            String [] arr = input.split(delimiter_a);
+            String [] arr = ref_String_Input.split(ref_String_Delimiter_Comma);
 
             // Log découpe 1
-            System.out.println(arr);
+            for (String ref_String_Unit : arr) {
+                System.out.println(ref_String_Unit);
+            }
 
             String ip_dec = arr[0]; // KEY_IP=216.58.213.132
             String port_dec = arr[1]; // KEY_PORT=80
@@ -179,12 +201,12 @@ public class Test_Explication_Regex {
             // -- Traitement IP ----------------------------------------------------------------------------------
 
             // -- Decoupe ip donne ça 216.58.213.132
-            String [] arr2 = ip_dec.split( delimitier_b);
+            String [] arr2 = ip_dec.split(ref_String_Delimiter_Equals);
 
             String raw_ip = arr2[1]; // 216.58.213.132     c'est loffset 1
 
 
-            String [] arr_Ip = raw_ip.split(delimitier_c); // 216.58.213.132 devient [216][58][213][132]
+            String [] arr_Ip = raw_ip.split(ref_String_Delimiter_Dot); // 216.58.213.132 devient [216][58][213][132]
 
             // -- Log
             System.out.println(arr_Ip);
@@ -215,8 +237,8 @@ public class Test_Explication_Regex {
 
             // -- Traitement Port ----------------------------------------------------------------------------------
 
-            // -- Decoupe ip donne ça 216.58.213.132
-            String [] Ref_String_Array_Port = port_dec.split( delimitier_b);
+            // -- Decoupe  donne ça 216.58.213.132
+            //ref_Array_String_KeyValue_Port = port_dec.split( ref_String_Delimiter_Equals);
         }
 
 
