@@ -10,9 +10,7 @@ public class Test_Explication_Regex {
 
     public static void main (String [] ref_Array_String_Arg){
 
-
     test4();
-
 
     }
 
@@ -167,42 +165,58 @@ public class Test_Explication_Regex {
         Matcher m = p.matcher(input);
 
         if(m.find()){
+            System.out.println("Regex verif ok");
 
             // Decoupe 1 done ça KEY_IP=216.58.213.132
-            String [] arr =  input.split(delimiter_a);
+            String [] arr = input.split(delimiter_a);
+
+            // Log découpe 1
+            System.out.println(arr);
 
             String ip_dec = arr[0]; // KEY_IP=216.58.213.132
             String port_dec = arr[1]; // KEY_PORT=80
 
+            // -- Traitement IP ----------------------------------------------------------------------------------
+
             // -- Decoupe ip donne ça 216.58.213.132
-            String [] arr2 =  ip_dec.split( delimitier_b);
+            String [] arr2 = ip_dec.split( delimitier_b);
 
             String raw_ip = arr2[1]; // 216.58.213.132     c'est loffset 1
 
 
-            String [] arr_Ip =raw_ip.split(delimitier_c); // 216.58.213.132 devient [216][58][213][132]
+            String [] arr_Ip = raw_ip.split(delimitier_c); // 216.58.213.132 devient [216][58][213][132]
+
+            // -- Log
+            System.out.println(arr_Ip);
 
             int [] ref_Array_Int_Ip = Stream.of(arr_Ip).mapToInt((e) -> Integer.valueOf(e)).toArray();
 
-            boolean isIpgood =true;
+            // -- Log
+            System.out.println(ref_Array_Int_Ip);
+
+            boolean isIpgood = true;
 
             for(int u :  ref_Array_Int_Ip){
 
-                if(u > 255  || u <1) {
+                System.out.println(u);
 
+                if(u > 255  || u < 1) {
+
+                    System.out.println("Noooope");
                     isIpgood = false;
                     break;
 
+                } else {
+                    System.out.println("IP OK !");
                 }
 
             }
 
 
-            // -- Verification ip
+            // -- Traitement Port ----------------------------------------------------------------------------------
 
-
-            // -- Verification port
-
+            // -- Decoupe ip donne ça 216.58.213.132
+            String [] Ref_String_Array_Port = port_dec.split( delimitier_b);
         }
 
 

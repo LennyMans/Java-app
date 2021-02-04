@@ -70,11 +70,10 @@ public class TestSocket {
 
 
         TIPS
-        // -- util
+
+        // -- UTILS
         public boolean verifyIp(String ip){}
         public boolean verifyPort(String port){}
-
-
 
         */
 
@@ -111,7 +110,12 @@ public class TestSocket {
                 if (ref_Match.find() == Boolean.TRUE) {
                     System.out.println("It's okay");
 
-                    // -- Commit
+                    // -- Log current line
+                    System.out.println(ref_String_Read_Line);
+
+                    // Ici faire la vérif de l'ip puis du port en appelant les utils
+
+                    // -- Commit si les verif sont ok
                     ref_ArrayList_Data_Conf.add(ref_String_Read_Line);
 
                 } else {
