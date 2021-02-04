@@ -79,18 +79,14 @@ public class TestSocket {
         */
 
         // -- VARS
-        String ref_String_Data_Conf = "";
-        ArrayList<String> ref_ArrayList_Conf = new ArrayList<>();
-
-        // -- Fake Array pour continuer
-        ArrayList<String> ref_ArrayList_Fake = new ArrayList<>(Arrays.asList("KEY_IP=216.58.213.132,KEY_PORT=80", "KEY_IP=216.58.213.132,KEY_PORT=80"));
+        ArrayList<String> ref_ArrayList_Data_Conf = new ArrayList<>();
 
         // -- VARS - Declare path of the conf file
         String ref_String_File_Conf_Path = "./PERSISTENCE/CONNECTION_CONFIGURATION.txt";
 
         // -- Regex IP
         final String ref_String_Regex_Verification =
-                "^KEY_IP=([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}),KEY_PORT=([0-9]{1,5})$";
+                "^KEY_IP=([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}),KEY_PORT=([0-9]{1,5})$";
 
         // -- INIT
         Pattern ref_Pattern  = Pattern.compile(ref_String_Regex_Verification);
@@ -103,44 +99,31 @@ public class TestSocket {
             // -- Init Buffred reader
             BufferedReader ref_Buffered_Reader_File_Conf = new BufferedReader(new FileReader(ref_File_Conf));
 
-            // -- Declare a new String Builder
-            //StringBuilder ref_StringBuilder_File_Conf = new StringBuilder();
-
             // -- Declare variable string read line
             String ref_String_Read_Line;
 
             // -- Loop process
-            while(( ref_String_Read_Line = ref_Buffered_Reader_File_Conf.readLine()) != null) {
+            while((ref_String_Read_Line = ref_Buffered_Reader_File_Conf.readLine()) != null) {
 
                 // -- Verif if the line match with the pattern
                 ref_Match = ref_Pattern.matcher(ref_String_Read_Line);
 
-                // -- Log
-                System.out.println("IS MATCH ? " + ref_Match.find());
-
                 if (ref_Match.find() == Boolean.TRUE) {
-
                     System.out.println("It's okay");
+
                     // -- Commit
-                    //ref_StringBuilder_File_Conf.append(ref_String_Read_Line).append("\n");
-                    ref_ArrayList_Conf.add(ref_Buffered_Reader_File_Conf.readLine());
+                    ref_ArrayList_Data_Conf.add(ref_String_Read_Line);
 
                 } else {
-
-                    System.out.println("marche pas gayzou");
-
+                    System.out.println("Nooope");
                 }
             }
 
             // -- Close buffer
             ref_Buffered_Reader_File_Conf.close();
 
-            // -- Output les data dans la variable
-            //ref_String_Data_Conf = ref_StringBuilder_File_Conf.toString();
-
             // -- Log
-            //System.out.println(ref_String_Data_Conf);
-            System.out.println(ref_ArrayList_Conf);
+            System.out.println(ref_ArrayList_Data_Conf);
 
         } catch (IOException ref_Exeception) {
             System.out.println("ouuups, Il y a un problème");
