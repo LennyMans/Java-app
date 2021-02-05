@@ -153,6 +153,9 @@ public class Test_Explication_Regex {
         final String ref_String_Regex_Verification =
                 "^KEY_IP=([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}),KEY_PORT=([0-9]{1,5})$";
 
+        boolean ref_Boolean_isIpgood;
+        boolean ref_Boolean_isPortGood;
+
         String ref_String_Input = "KEY_IP=216.58.213.132,KEY_PORT=80";
 
         String ref_String_Delimiter_Comma = ",";
@@ -168,55 +171,74 @@ public class Test_Explication_Regex {
         String [] ref_Array_String_Array_Frame_Splitted; // KEY_IP=216.58.213.132,KEY_PORT=80
 
         // -- Init key/value split ip
-        String [] ref_Array_String_KeyValue_Ip; // KEY_IP=216.58.213.132
+        String ref_Array_String_KeyValue_Ip; // KEY_IP=216.58.213.132
 
         // -- Init split ip [xxx][xxx][xxx][xxx]
         String [] ref_Array_String_Ip_Splitted; // 216.58.213.132 soit ref_Array_String_KeyValue_Ip[1]
+
+        // -- Init Raw IP
+        String ref_String_Raw_Ip;
+
+        // Init split ip numbers only
+        String [] ref_Array_String_Raw_Ip_Split;
+
+        // Init array of Ip numbers
+        int [] ref_Array_Int_Ip;
 
         // ... verif ip inside code
 
 
         // -- Init key/value split port
-        String [] ref_Array_String_KeyValue_Port; // KEY_PORT=80
+        String ref_Array_String_KeyValue_Port; // KEY_PORT=80
 
         // -- Init verif port xxxxx
-        String ref_String_Port; // ref_Array_String_KeyValue_Port[1]
+        String [] ref_String_Port; // ref_Array_String_KeyValue_Port[1]
 
 
         // -- Check Ip
         if(ref_Matcher.find()){
             System.out.println("Regex verif ok");
 
-            // Decoupe 1 done ça KEY_IP=216.58.213.132
-            String [] arr = ref_String_Input.split(ref_String_Delimiter_Comma);
+            // -- Split IP adress and port
+
+            // Découpe 1 : done ça KEY_IP=216.58.213.132 / KEY_PORT=80
+            ref_Array_String_Array_Frame_Splitted = ref_String_Input.split(ref_String_Delimiter_Comma);
 
             // Log découpe 1
-            for (String ref_String_Unit : arr) {
+            for (String ref_String_Unit : ref_Array_String_Array_Frame_Splitted) {
                 System.out.println(ref_String_Unit);
             }
 
-            String ip_dec = arr[0]; // KEY_IP=216.58.213.132
-            String port_dec = arr[1]; // KEY_PORT=80
+            ref_Array_String_KeyValue_Ip = ref_Array_String_Array_Frame_Splitted[0]; // KEY_IP=216.58.213.132
+            ref_Array_String_KeyValue_Port = ref_Array_String_Array_Frame_Splitted[1]; // KEY_PORT=80
 
             // -- Traitement IP ----------------------------------------------------------------------------------
 
             // -- Decoupe ip donne ça 216.58.213.132
-            String [] arr2 = ip_dec.split(ref_String_Delimiter_Equals);
+            ref_Array_String_Ip_Splitted = ref_Array_String_KeyValue_Ip.split(ref_String_Delimiter_Equals);
 
-            String raw_ip = arr2[1]; // 216.58.213.132     c'est loffset 1
-
-
-            String [] arr_Ip = raw_ip.split(ref_String_Delimiter_Dot); // 216.58.213.132 devient [216][58][213][132]
+            ref_String_Raw_Ip = ref_Array_String_Ip_Splitted[1]; // 216.58.213.132 => l'offset 1
 
             // -- Log
-            System.out.println(arr_Ip);
+            System.out.println("Raw IP = " + ref_String_Raw_Ip);
 
-            int [] ref_Array_Int_Ip = Stream.of(arr_Ip).mapToInt((e) -> Integer.valueOf(e)).toArray();
+            // -- Split all numbers of ip and remove dots
+            ref_Array_String_Raw_Ip_Split = ref_String_Raw_Ip.split(ref_String_Delimiter_Dot); // 216.58.213.132 devient [216][58][213][132]
 
             // -- Log
-            System.out.println(ref_Array_Int_Ip);
+            for (String ref_String_Unit : ref_Array_String_Raw_Ip_Split) {
+                System.out.println("Raw IP Split" + ref_String_Unit);
+            }
 
-            boolean isIpgood = true;
+            ref_Array_Int_Ip = Stream.of(ref_Array_String_Raw_Ip_Split).mapToInt((e) -> Integer.valueOf(e)).toArray();
+
+            // -- Log
+            for (int ref_Int_Unit : ref_Array_Int_Ip) {
+                System.out.println("Raw IP Split number" + ref_Int_Unit);
+            }
+
+            // -- Check
+            ref_Boolean_isIpgood = true;
 
             for(int u :  ref_Array_Int_Ip){
 
@@ -225,7 +247,7 @@ public class Test_Explication_Regex {
                 if(u > 255  || u < 1) {
 
                     System.out.println("Noooope");
-                    isIpgood = false;
+                    ref_Boolean_isIpgood = false;
                     break;
 
                 } else {
@@ -234,11 +256,35 @@ public class Test_Explication_Regex {
 
             }
 
-
             // -- Traitement Port ----------------------------------------------------------------------------------
 
-            // -- Decoupe  donne ça 216.58.213.132
-            //ref_Array_String_KeyValue_Port = port_dec.split( ref_String_Delimiter_Equals);
+            // -- Decoupe 1 : Donne le numéro du port
+            ref_String_Port = ref_Array_String_KeyValue_Port.split(ref_String_Delimiter_Equals);
+
+            // -- Log
+            for (String ref_String_Unit : ref_String_Port) {
+                System.out.println("Port = " + ref_String_Unit);
+            }
+
+            // -- Check
+            ref_Boolean_isPortGood = true;
+
+            for(int u :  ref_Array_Int_Ip){
+
+                System.out.println(u);
+
+                if(u > 0  || u < 1023) {
+
+                    System.out.println("Noooope");
+                    ref_Boolean_isPortGood = false;
+                    break;
+
+                } else {
+                    System.out.println("Port OK !");
+                }
+
+            }
+
         }
 
 

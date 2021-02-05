@@ -35,6 +35,10 @@ public class TestSocket {
     public final static String ref_String_Command = "/getMyFuckingColor";
     public final static Path ref_Path_File_Conf = FileSystems.getDefault().getPath("PERSISTANCE", "CONNECTION8CONFIGURATION.txt");
 
+    String ref_String_Delimiter_Comma = ",";
+    String ref_String_Delimiter_Equals = "=";
+    String ref_String_Delimiter_Dot = ".";
+
     // -- VARS
     private String ref_String_Hostname;
     private String ref_String_IP;
@@ -77,22 +81,25 @@ public class TestSocket {
 
         */
 
-        // -- VARS
+        // -- Vars
         ArrayList<String> ref_ArrayList_Data_Conf = new ArrayList<>();
 
-        // -- VARS - Declare path of the conf file
+        // -- Vars - Declare path of the conf file
         String ref_String_File_Conf_Path = "./PERSISTENCE/CONNECTION_CONFIGURATION.txt";
 
         // -- Regex IP
         final String ref_String_Regex_Verification =
                 "^KEY_IP=([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3}),KEY_PORT=([0-9]{1,5})$";
 
-        // -- INIT
+        // -- Init
         Pattern ref_Pattern  = Pattern.compile(ref_String_Regex_Verification);
         Matcher ref_Match = null;
 
         // -- Init conf file
         File ref_File_Conf = new File(ref_String_File_Conf_Path);
+
+        // -- Init frame split
+        String [] ref_Array_String_Array_Frame_Splitted; // KEY_IP=216.58.213.132,KEY_PORT=80
 
         try {
             // -- Init Buffred reader
@@ -114,6 +121,11 @@ public class TestSocket {
                     System.out.println(ref_String_Read_Line);
 
                     // Ici faire la vérif de l'ip puis du port en appelant les utils
+                    ref_Array_String_Array_Frame_Splitted = ref_String_Read_Line.split(ref_String_Delimiter_Comma);
+
+                    // Call verifyIp and verifyPort utils
+                    verifyIp(ref_Array_String_Array_Frame_Splitted[0]);
+                    verifyPort(ref_Array_String_Array_Frame_Splitted[1]);
 
                     // -- Commit si les verif sont ok
                     ref_ArrayList_Data_Conf.add(ref_String_Read_Line);
@@ -134,9 +146,6 @@ public class TestSocket {
             ref_Exeception.printStackTrace();
         }
     }
-
-
-
 
     private StringBuffer get_Data_From_Google(){
 
@@ -222,6 +231,111 @@ public class TestSocket {
 
 
     }
+
+    // -- UTILS
+    public boolean verifyIp(String ref_String_Ip_To_Check){
+
+        // -- Cons
+        boolean ref_Boolean_isIpgood = true;
+
+        // -- Init frame split
+        String [] ref_Array_String_Array_Frame_Splitted; // KEY_IP=216.58.213.132,KEY_PORT=80
+
+        // -- Init key/value split ip
+        String ref_Array_String_KeyValue_Ip; // KEY_IP=216.58.213.132
+
+        // -- Init split ip [xxx][xxx][xxx][xxx]
+        String [] ref_Array_String_Ip_Splitted; // 216.58.213.132 soit ref_Array_String_KeyValue_Ip[1]
+
+        // -- Init Raw IP
+        String ref_String_Raw_Ip;
+
+        // Init split ip numbers only
+        String [] ref_Array_String_Raw_Ip_Split;
+
+        // Init array of Ip numbers
+        int [] ref_Array_Int_Ip;
+
+        // -- Work
+        ref_Array_String_Ip_Splitted = ref_String_Ip_To_Check.split(ref_String_Delimiter_Equals);
+
+        ref_String_Raw_Ip = ref_Array_String_Ip_Splitted[1]; // 216.58.213.132 => l'offset 1
+
+        // -- Log
+        System.out.println("Raw IP = " + ref_String_Raw_Ip);
+
+        // -- Split all numbers of ip and remove dots
+        ref_Array_String_Raw_Ip_Split = ref_String_Raw_Ip.split(ref_String_Delimiter_Dot); // 216.58.213.132 devient [216][58][213][132]
+
+        // -- Log
+        for (String ref_String_Unit : ref_Array_String_Raw_Ip_Split) {
+            System.out.println("Raw IP Split" + ref_String_Unit);
+        }
+
+        ref_Array_Int_Ip = Stream.of(ref_Array_String_Raw_Ip_Split).mapToInt((e) -> Integer.valueOf(e)).toArray();
+
+        // -- Log
+        for (int ref_Int_Unit : ref_Array_Int_Ip) {
+            System.out.println("Raw IP Split number" + ref_Int_Unit);
+        }
+
+        // -- Check
+        ref_Boolean_isIpgood = true;
+
+        for(int u :  ref_Array_Int_Ip){
+
+            System.out.println(u);
+
+            if(u > 255  || u < 1) {
+
+                System.out.println("Noooope");
+                ref_Boolean_isIpgood = false;
+                break;
+
+            } else {
+                System.out.println("IP OK !");
+            }
+
+        }
+
+        return true;
+    }
+
+    public boolean verifyPort(String ref_String_Port_To_Check){
+        // -- Cons
+        boolean ref_Boolean_isPortGood;
+
+        // -- Vars
+        String [] ref_String_Array_Port; // ref_Array_String_KeyValue_Port[1]
+
+        // Split
+        ref_String_Array_Port = ref_String_Port_To_Check.split(ref_String_Delimiter_Equals);
+
+        // -- Log
+        for (String ref_String_Unit : ref_String_Array_Port) {
+            System.out.println("Port = " + ref_String_Unit);
+        }
+
+        // -- Get Port
+        int ref_String_Port_Number = Integer.parseInt(ref_String_Array_Port[1]);
+
+        // -- Check
+        ref_Boolean_isPortGood = true;
+
+        if(ref_String_Port_Number < 1  || ref_String_Port_Number > 1023) {
+
+            System.out.println("Noooope");
+            ref_Boolean_isPortGood = false;
+
+            return false;
+
+        } else {
+
+            System.out.println("Port OK !");
+            return true;
+        }
+    }
+
 
 
     // -- MAIN -------------------------------------------------------------------------------------
