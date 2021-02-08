@@ -37,7 +37,7 @@ public class TestSocket {
 
     String ref_String_Delimiter_Comma = ",";
     String ref_String_Delimiter_Equals = "=";
-    String ref_String_Delimiter_Dot = ".";
+    String ref_String_Delimiter_Dot = "\\.";
 
     // -- VARS
     private String ref_String_Hostname;
@@ -236,7 +236,7 @@ public class TestSocket {
     public boolean verifyIp(String ref_String_Ip_To_Check){
 
         // -- Cons
-        boolean ref_Boolean_isIpgood = true;
+        boolean ref_Boolean_isIpgood;
 
         // -- Init frame split
         String [] ref_Array_String_Array_Frame_Splitted; // KEY_IP=216.58.213.132,KEY_PORT=80
@@ -266,6 +266,8 @@ public class TestSocket {
 
         // -- Split all numbers of ip and remove dots
         ref_Array_String_Raw_Ip_Split = ref_String_Raw_Ip.split(ref_String_Delimiter_Dot); // 216.58.213.132 devient [216][58][213][132]
+
+        System.out.println(ref_Array_String_Raw_Ip_Split[0]);
 
         // -- Log
         for (String ref_String_Unit : ref_Array_String_Raw_Ip_Split) {
@@ -298,7 +300,7 @@ public class TestSocket {
 
         }
 
-        return true;
+        return ref_Boolean_isIpgood;
     }
 
     public boolean verifyPort(String ref_String_Port_To_Check){
@@ -332,7 +334,7 @@ public class TestSocket {
         } else {
 
             System.out.println("Port OK !");
-            return true;
+            return ref_Boolean_isPortGood;
         }
     }
 

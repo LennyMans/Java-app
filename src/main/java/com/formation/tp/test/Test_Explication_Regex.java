@@ -160,7 +160,7 @@ public class Test_Explication_Regex {
 
         String ref_String_Delimiter_Comma = ",";
         String ref_String_Delimiter_Equals = "=";
-        String ref_String_Delimiter_Dot = ".";
+        String ref_String_Delimiter_Dot = "\\.";
 
         // -- Init regex
         Pattern ref_Pattern = Pattern.compile(ref_String_Regex_Verification);
@@ -227,14 +227,14 @@ public class Test_Explication_Regex {
 
             // -- Log
             for (String ref_String_Unit : ref_Array_String_Raw_Ip_Split) {
-                System.out.println("Raw IP Split" + ref_String_Unit);
+                System.out.println("Raw IP Split = " + ref_String_Unit);
             }
 
             ref_Array_Int_Ip = Stream.of(ref_Array_String_Raw_Ip_Split).mapToInt((e) -> Integer.valueOf(e)).toArray();
 
             // -- Log
             for (int ref_Int_Unit : ref_Array_Int_Ip) {
-                System.out.println("Raw IP Split number" + ref_Int_Unit);
+                System.out.println("Raw IP Split int number = " + ref_Int_Unit);
             }
 
             // -- Check
