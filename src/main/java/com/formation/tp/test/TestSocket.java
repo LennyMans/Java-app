@@ -101,6 +101,15 @@ public class TestSocket {
         // -- Init frame split
         String [] ref_Array_String_Array_Frame_Splitted; // KEY_IP=216.58.213.132,KEY_PORT=80
 
+        // -- Init final frame split
+        String [] ref_String_Array_Final_Frame;
+
+        String ref_String_Ip_Frame_Final;
+        String ref_String_Port_Frame_Final;
+
+        String [] ref_String_Final_Data_IP;
+        String [] ref_String_Final_Data_Port;
+
         try {
             // -- Init Buffred reader
             BufferedReader ref_Buffered_Reader_File_Conf = new BufferedReader(new FileReader(ref_File_Conf));
@@ -115,23 +124,22 @@ public class TestSocket {
                 ref_Match = ref_Pattern.matcher(ref_String_Read_Line);
 
                 if (ref_Match.find() == Boolean.TRUE) {
-                    System.out.println("It's okay");
+                    System.out.println("Regex okay");
 
                     // -- Log current line
-                    System.out.println(ref_String_Read_Line);
+                    //System.out.println(ref_String_Read_Line);
 
                     // Ici faire la vérif de l'ip puis du port en appelant les utils
                     ref_Array_String_Array_Frame_Splitted = ref_String_Read_Line.split(ref_String_Delimiter_Comma);
 
                     // Call verifyIp and verifyPort utils
-                    verifyIp(ref_Array_String_Array_Frame_Splitted[0]);
-                    verifyPort(ref_Array_String_Array_Frame_Splitted[1]);
-
                     // -- Commit si les verif sont ok
-                    ref_ArrayList_Data_Conf.add(ref_String_Read_Line);
+                    if ( verifyIp(ref_Array_String_Array_Frame_Splitted[0]) == true && verifyPort(ref_Array_String_Array_Frame_Splitted[1]) == true) {
+                        ref_ArrayList_Data_Conf.add(ref_String_Read_Line);
+                    }
 
                 } else {
-                    System.out.println("Nooope");
+                    System.out.println("Regex : Nooope");
                 }
             }
 
@@ -139,12 +147,28 @@ public class TestSocket {
             ref_Buffered_Reader_File_Conf.close();
 
             // -- Log
-            System.out.println(ref_ArrayList_Data_Conf);
+            System.out.println("Data conf contient : " + ref_ArrayList_Data_Conf);
 
         } catch (IOException ref_Exeception) {
             System.out.println("ouuups, Il y a un problème");
             ref_Exeception.printStackTrace();
         }
+
+        // -- Take first good conf line and split it
+        ref_String_Array_Final_Frame = ref_ArrayList_Data_Conf.get(0).split(ref_String_Delimiter_Comma);
+
+        // -- Get IP and port frame
+        ref_String_Ip_Frame_Final = ref_String_Array_Final_Frame[0];
+        ref_String_Port_Frame_Final = ref_String_Array_Final_Frame[1];
+
+        // -- Split frame to get raw data
+        ref_String_Final_Data_IP = ref_String_Ip_Frame_Final.split(ref_String_Delimiter_Equals);
+        ref_String_Final_Data_Port = ref_String_Port_Frame_Final.split(ref_String_Delimiter_Equals);
+
+        // -- Init final IP && port
+        this.ref_String_IP = ref_String_Final_Data_IP[1];
+        this.ref_int_Port = Integer.parseInt(ref_String_Final_Data_Port[1]);
+
     }
 
     private StringBuffer get_Data_From_Google(){
@@ -262,23 +286,21 @@ public class TestSocket {
         ref_String_Raw_Ip = ref_Array_String_Ip_Splitted[1]; // 216.58.213.132 => l'offset 1
 
         // -- Log
-        System.out.println("Raw IP = " + ref_String_Raw_Ip);
+        //System.out.println("Raw IP = " + ref_String_Raw_Ip);
 
         // -- Split all numbers of ip and remove dots
         ref_Array_String_Raw_Ip_Split = ref_String_Raw_Ip.split(ref_String_Delimiter_Dot); // 216.58.213.132 devient [216][58][213][132]
 
-        System.out.println(ref_Array_String_Raw_Ip_Split[0]);
-
         // -- Log
         for (String ref_String_Unit : ref_Array_String_Raw_Ip_Split) {
-            System.out.println("Raw IP Split" + ref_String_Unit);
+            //System.out.println("Raw IP Split" + ref_String_Unit);
         }
 
         ref_Array_Int_Ip = Stream.of(ref_Array_String_Raw_Ip_Split).mapToInt((e) -> Integer.valueOf(e)).toArray();
 
         // -- Log
         for (int ref_Int_Unit : ref_Array_Int_Ip) {
-            System.out.println("Raw IP Split number" + ref_Int_Unit);
+            //System.out.println("Raw IP Split number" + ref_Int_Unit);
         }
 
         // -- Check
@@ -286,20 +308,20 @@ public class TestSocket {
 
         for(int u :  ref_Array_Int_Ip){
 
-            System.out.println(u);
+            //System.out.println(u);
 
             if(u > 255  || u < 1) {
 
-                System.out.println("Noooope");
+                //System.out.println("Noooope");
                 ref_Boolean_isIpgood = false;
                 break;
 
             } else {
-                System.out.println("IP OK !");
+                //System.out.println("IP OK !");
             }
 
         }
-
+        System.out.println(ref_Boolean_isIpgood);
         return ref_Boolean_isIpgood;
     }
 
@@ -315,7 +337,7 @@ public class TestSocket {
 
         // -- Log
         for (String ref_String_Unit : ref_String_Array_Port) {
-            System.out.println("Port = " + ref_String_Unit);
+            //System.out.println("Port = " + ref_String_Unit);
         }
 
         // -- Get Port
@@ -326,14 +348,15 @@ public class TestSocket {
 
         if(ref_String_Port_Number < 1  || ref_String_Port_Number > 1023) {
 
-            System.out.println("Noooope");
+            //System.out.println("Noooope");
             ref_Boolean_isPortGood = false;
 
             return false;
 
         } else {
 
-            System.out.println("Port OK !");
+            //System.out.println("Port OK !");
+            System.out.println(ref_Boolean_isPortGood);
             return ref_Boolean_isPortGood;
         }
     }
