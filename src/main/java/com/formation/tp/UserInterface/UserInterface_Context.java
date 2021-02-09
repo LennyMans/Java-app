@@ -1,8 +1,15 @@
 package com.formation.tp.UserInterface;
 
+import com.formation.tp.Network.Callable_Remote_GetDate;
+import com.formation.tp.app.Master_Context;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
 public class UserInterface_Context {
     
@@ -125,12 +132,12 @@ public class UserInterface_Context {
       
        this.ref_Jbutton = new JButton("Get a date");
             this.ref_Jbutton.setFont(new Font("Lato", Font.PLAIN, 13));
-            this.ref_Jbutton.setBackground(new Color(132, 46, 27));
-            this.ref_Jbutton.setForeground(Color.WHITE);
             this.ref_Jbutton.setBorder(BorderFactory.createEmptyBorder());
             this.ref_Jbutton.setPreferredSize(new Dimension(120,30));
             this.ref_Jbutton.setMinimumSize(new Dimension(120,35));
             this.ref_Jbutton.setMaximumSize(new Dimension(120,35));
+            this.ref_Jbutton.addMouseListener(new MouseListener_GetDate());
+            this.ref_Jbutton.addMouseListener(new ChangeButtonColourListener());
             
 /*
             MouseListener[] ref_Array_MousListener =  this.ref_Jbutton.getMouseListeners();
@@ -201,6 +208,151 @@ public class UserInterface_Context {
         ref_Jframe.setLocation(x, y);
         ref_Jframe.setVisible(true);
         ref_Jframe.setResizable(false);
+
+    }
+
+
+    // -- OUTER CALLBACK -----------------------------------------------
+
+    public void commit_Date (String ref_String_Value){
+
+        SwingUtilities.invokeLater(()->{
+
+            this.ref_JtextArea.append(ref_String_Value);
+
+        });
+
+    }
+
+
+    // -- MOUSE LISTENER ----------------------------------------------------------
+
+    class MouseListener_GetDate implements MouseListener {
+
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+           // -- Build
+           Runnable ref_Runnable = new Runnable() {
+               @Override
+               public void run() {
+
+                   // -- Retrieve
+                   FutureTask<String> ref_Future_Task = Callable_Remote_GetDate.get_FutureTask_Execute_Resquest();
+
+                   // -- Execute
+                   Executors.defaultThreadFactory()
+                           .newThread(ref_Future_Task)
+                           .start();
+
+                   // -- Retrieve
+                   String ref_String_Date = null;
+
+                   try {
+
+                       ref_String_Date = ref_Future_Task.get();
+
+                   } catch (InterruptedException | ExecutionException ref_Exception) {
+
+                       ref_Exception.printStackTrace();
+                   }
+
+                   // -- Output
+                   Master_Context.ref_UserInterface_Context.commit_Date("Date Collected From Goole=" +  ((ref_String_Date != null )? ref_String_Date:"Unable to retrieve a date"));
+               }
+           };
+
+            // -- Eexcute
+            Executors.defaultThreadFactory().newThread(ref_Runnable).start();
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    }
+
+    class ChangeButtonColourListener implements MouseListener{
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            final JButton jb = (JButton)e.getSource();
+
+            SwingUtilities.invokeLater(new Runnable(){
+
+                @Override
+                public void run() {
+
+                    jb.setBackground(COLOR_PRIMARY_HL);
+
+                }
+
+
+            });
+
+
+
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            final JButton jb = (JButton)e.getSource();
+
+
+            SwingUtilities.invokeLater(new Runnable(){
+
+                @Override
+                public void run() {
+
+                    jb.setBackground(COLOR_PRIMARY);
+
+
+                }
+
+
+            });
+
+
+
+
+        }
+
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            // TODO Auto-generated method stub
+
+        }
+
 
     }
 }
