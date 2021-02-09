@@ -21,7 +21,6 @@ public class Master_Context {
     public static UserInterface_Context ref_UserInterface_Context;
 
 
-
     // -- CONSTRUCTOR ------------------------------
 
     public Master_Context(){

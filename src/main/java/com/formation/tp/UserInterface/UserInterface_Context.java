@@ -32,7 +32,8 @@ public class UserInterface_Context {
     // -- CONSTRUCTOR --------------------------------------------------
     
     public UserInterface_Context(){
-        
+
+        this.init_Ui_Properties();
         this.init_UI();
         this.link_UI();
         this.genFrame();
@@ -42,19 +43,58 @@ public class UserInterface_Context {
     
     
     // -- INITILISATOR -------------------------------------------------
-    
+
+    private void init_Ui_Properties(){
+
+        System.setProperty("awt.useSystemAAFontSettings", "on");
+        System.setProperty("swing.aatext", "true");
+
+
+        try {
+                for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+
+
+                    if ("Nimbus".equals(info.getName())) {
+
+                        try {
+                            UIManager.setLookAndFeel(info.getClassName());
+                        } catch (Exception ref_Exception) {
+                            ref_Exception.printStackTrace();
+                        }
+                        break;
+                    }
+
+                }
+
+            }catch(Exception e){}
+
+            // Table
+            UIManager.put("nimbusBase", COLOR_PRIMARY); // ??
+            UIManager.put("nimbusFocus", new Color(0, 0, 0, 0));
+            UIManager.put("info", Color.WHITE);
+
+            UIManager.put("Table[Enabled+Selected].textForeground", Color.WHITE);
+            UIManager.put("Table[Enabled+Selected].textBackground", COLOR_PRIMARY);
+
+            UIManager.put("ComboBox:\"ComboBox.listRenderer\"[Selected].background", COLOR_PRIMARY);
+
+            UIManager.put("MenuBar.foreground", Color.PINK);
+            UIManager.put("TextArea[Selected].textForeground", Color.BLACK);
+
+    }
+
     private void init_UI(){
 
        // -- GLOBAL DASHBOARD 
        this.ref_Jpanel_Dashboard = new JPanel();
-           this.ref_Jpanel_Dashboard.setMinimumSize(new Dimension(1000, 800));
-           this.ref_Jpanel_Dashboard.setPreferredSize(new Dimension(1000, 800));
+           this.ref_Jpanel_Dashboard.setMinimumSize(new Dimension(800, 600));
+           this.ref_Jpanel_Dashboard.setPreferredSize(new Dimension(800, 600));
            this.ref_Jpanel_Dashboard.setLayout(new GridBagLayout());
 
         // -- CONTAINER A
         this.ref_Jpanel_Container_A = new JPanel();
-            this.ref_Jpanel_Container_A.setMinimumSize(new Dimension(1000, 400));
-            this.ref_Jpanel_Container_A.setPreferredSize(new Dimension(1000, 400));
+            this.ref_Jpanel_Container_A.setMinimumSize(new Dimension(800, 400));
+            this.ref_Jpanel_Container_A.setPreferredSize(new Dimension(800, 400));
             this.ref_Jpanel_Container_A.setBackground(COLOR_PRIMARY);
             this.ref_Jpanel_Container_A.setOpaque(true);
             this.ref_Jpanel_Container_A.setLayout(new GridBagLayout());
@@ -67,30 +107,32 @@ public class UserInterface_Context {
                         this.ref_JtextArea.setEditable(false);
                     
                     this.ref_JscrollPane = new JScrollPane(this.ref_JtextArea);
-                        this.ref_JscrollPane.setMinimumSize(new Dimension(1000, 400));
-                        this.ref_JscrollPane.setPreferredSize(new Dimension(1000, 400));
+                        this.ref_JscrollPane.setMinimumSize(new Dimension(400, 300));
+                        this.ref_JscrollPane.setPreferredSize(new Dimension(400, 300));
+                        this.ref_JscrollPane.setMaximumSize(new Dimension(400, 300));
                         this.ref_JscrollPane.setBorder(BorderFactory.createEmptyBorder());
                         this.ref_JscrollPane.setWheelScrollingEnabled(true);
 
 
         // -- CONTAINER B
         this.ref_Jpanel_Container_B = new JPanel();
-            this.ref_Jpanel_Container_B.setMinimumSize(new Dimension(1000, 400));
-            this.ref_Jpanel_Container_B.setPreferredSize(new Dimension(1000, 400));
+            this.ref_Jpanel_Container_B.setMinimumSize(new Dimension(800, 200));
+            this.ref_Jpanel_Container_B.setPreferredSize(new Dimension(800, 200));
             this.ref_Jpanel_Container_B.setBackground(COLOR_PRIMARY);
             this.ref_Jpanel_Container_B.setOpaque(true);
             this.ref_Jpanel_Container_B.setLayout(new GridBagLayout());
        
       
        this.ref_Jbutton = new JButton("Get a date");
-            this.ref_Jbutton.setFont(new Font("Lato", Font.PLAIN, 12));
+            this.ref_Jbutton.setFont(new Font("Lato", Font.PLAIN, 13));
             this.ref_Jbutton.setBackground(new Color(132, 46, 27));
             this.ref_Jbutton.setForeground(Color.WHITE);
             this.ref_Jbutton.setBorder(BorderFactory.createEmptyBorder());
-            this.ref_Jbutton.setPreferredSize(new Dimension(50,20));
-            this.ref_Jbutton.setMinimumSize(new Dimension(50,20));
-            this.ref_Jbutton.setMaximumSize(new Dimension(50,20));
+            this.ref_Jbutton.setPreferredSize(new Dimension(120,30));
+            this.ref_Jbutton.setMinimumSize(new Dimension(120,35));
+            this.ref_Jbutton.setMaximumSize(new Dimension(120,35));
             
+/*
             MouseListener[] ref_Array_MousListener =  this.ref_Jbutton.getMouseListeners();
             
             for(MouseListener ref_MousListener_Unit : ref_Array_MousListener){
@@ -99,6 +141,7 @@ public class UserInterface_Context {
             
             }
 
+*/
 
 
     }
@@ -113,9 +156,10 @@ public class UserInterface_Context {
         gbc.gridy = 0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.gridheight = 1;
-        gbc.fill = GridBagConstraints.BOTH;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0;
-        gbc.weighty = 1;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
 
         ref_Jpanel_Dashboard.add( ref_Jpanel_Container_A, gbc);
 
@@ -129,13 +173,13 @@ public class UserInterface_Context {
         gbc.gridy = 0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.gridheight= GridBagConstraints.REMAINDER;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
+
+        gbc.weightx = 0;
+        gbc.weighty = 0;
         
         
-        ref_Jpanel_Container_A.add(ref_JscrollPane, gbc);
-        ref_Jpanel_Container_B.add(ref_Jbutton, gbc);
+        ref_Jpanel_Container_A.add(ref_JscrollPane);
+        ref_Jpanel_Container_B.add(ref_Jbutton);
         
 
     }
@@ -144,7 +188,7 @@ public class UserInterface_Context {
 
         ref_Jframe = new JFrame("Github Sample");
         ref_Jframe.setContentPane(this.ref_Jpanel_Dashboard);
-        ref_Jframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        ref_Jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ref_Jframe.setAlwaysOnTop(true);
         ref_Jframe.pack();
 
