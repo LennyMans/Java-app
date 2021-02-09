@@ -1,9 +1,9 @@
-package com.formation.tp.color;
+package com.formation.tp.date;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class Color_Ticket {
+public class Date_Ticket {
 
     // -- CONS
     final public String ref_String_Value_Default = UUID.randomUUID().toString();
@@ -28,7 +28,7 @@ public class Color_Ticket {
 
     // -- CONSTRUCTOR ------------------------------------------------------------------------------
 
-    public Color_Ticket () {
+    public Date_Ticket() {
 
         this.init();
 

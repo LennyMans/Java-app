@@ -1,19 +1,17 @@
-package com.formation.tp.color;
+package com.formation.tp.date;
 
-import com.formation.tp.Network.Callable_Remote_Color;
-import com.formation.tp.keyboard.Keyboard_Context;
+import com.formation.tp.Network.Callable_Remote_GetDate;
 
 import java.util.ArrayDeque;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-public class Color_Context {
+public class Date_Context {
 
     // -- REF TICKET
     private Object ref_Object_Lock = new Object();
-    private ArrayDeque<Color_Ticket> ref_ArrayDeque_Color_Ticket = new ArrayDeque<>();
+    private ArrayDeque<Date_Ticket> ref_ArrayDeque_Date_Ticket = new ArrayDeque<>();
 
     // -- REF REMOTE
     private String ref_String_Ip;
@@ -28,13 +26,13 @@ public class Color_Context {
         public static final String ref_String_Status_Stop = UUID.randomUUID().toString();
         public static final String ref_String_Status_Kill = UUID.randomUUID().toString();
 
-    private String ref_String_EngineStatus = Color_Context.ref_String_Status_Stop;
+    private String ref_String_EngineStatus = Date_Context.ref_String_Status_Stop;
 
 
 
     // -- CONSTRUCTOR ------------------------------------------------------------------------
 
-    public Color_Context () {
+    public Date_Context() {
 
         this.init();
 
@@ -72,20 +70,20 @@ public class Color_Context {
 
     // -- OUTER CALLBACK ---------------------------------------------------------------------
 
-    public Color_Ticket get_ColorTicket () {
+    public Date_Ticket get_ColorTicket () {
 
         // -- Init
-        final Color_Ticket ref_Color_Ticket = new Color_Ticket();
+        final Date_Ticket ref_Date_Ticket = new Date_Ticket();
 
         // -- Work
         synchronized (this.ref_Object_Lock) {
 
-            ref_ArrayDeque_Color_Ticket.add(ref_Color_Ticket);
+            ref_ArrayDeque_Date_Ticket.add(ref_Date_Ticket);
 
         }
 
         // -- Commit
-        return ref_Color_Ticket;
+        return ref_Date_Ticket;
 
     }
 
@@ -99,11 +97,11 @@ public class Color_Context {
 
     // -- INNER CALLBACK ---------------------------------------------------------------------
 
-    protected Color_Ticket poll_ColorTicket () {
+    protected Date_Ticket poll_ColorTicket () {
 
         synchronized (this.ref_Object_Lock) {
 
-            return ref_ArrayDeque_Color_Ticket.poll();
+            return ref_ArrayDeque_Date_Ticket.poll();
 
         }
     }
@@ -143,19 +141,19 @@ public class Color_Context {
             while(ref_String_EngineStatus.equals(ref_String_Status_Kill) != Boolean.TRUE){
 
                 // -- Sleep
-               Color_Context.this.sleepMyFriend(ref_Int_TimeToSleep_Engine);
+               Date_Context.this.sleepMyFriend(ref_Int_TimeToSleep_Engine);
 
 
                     // -- LOOP START STOP
                     while(ref_String_EngineStatus.equals(ref_String_Status_Stop) != Boolean.TRUE){
 
                                 // -- Retrieve
-                                Color_Ticket ref_Color_Ticket_Unit = Color_Context.this.poll_ColorTicket();
+                                Date_Ticket ref_Date_Ticket_Unit = Date_Context.this.poll_ColorTicket();
 
                                 // -- Check && Set
-                                if (ref_Color_Ticket_Unit != null) {
+                                if (ref_Date_Ticket_Unit != null) {
 
-                                    new Thread(new Runnable_Build_Ticket(ref_Color_Ticket_Unit)).start();
+                                    new Thread(new Runnable_Build_Ticket(ref_Date_Ticket_Unit)).start();
 
                                 }
 
@@ -204,14 +202,14 @@ public class Color_Context {
     private class Runnable_Build_Ticket implements Runnable {
 
         // -- VARS
-        private final Color_Ticket ref_Color_Ticket;
+        private final Date_Ticket ref_Date_Ticket;
 
 
         // -- CONSTRUCTOR ---------------------------------------------------------------------
 
-        public Runnable_Build_Ticket (Color_Ticket ref_Color_Ticket) {
+        public Runnable_Build_Ticket (Date_Ticket ref_Date_Ticket) {
 
-            this.ref_Color_Ticket = ref_Color_Ticket;
+            this.ref_Date_Ticket = ref_Date_Ticket;
 
         }
 
@@ -222,10 +220,10 @@ public class Color_Context {
         public void run() {
 
             // -- Set
-            ref_Color_Ticket.setValue(Color_Ticket.ref_String_Key_Status, Color_Ticket.ref_String_Value_Status_Treated);
+            ref_Date_Ticket.setValue(Date_Ticket.ref_String_Key_Status, Date_Ticket.ref_String_Value_Status_Treated);
 
             // -- Create
-            FutureTask<String> ref_Future_Task_Unit = Callable_Remote_Color.get_FutureTask_Execute_Resquest();
+            FutureTask<String> ref_Future_Task_Unit = Callable_Remote_GetDate.get_FutureTask_Execute_Resquest();
 
             // -- Start
             try {
@@ -238,29 +236,29 @@ public class Color_Context {
 
                 // -- Check
                 String ref_String_Processing_Result = (ref_String_Color == null)
-                        ? Color_Ticket.ref_String_Value_Status_Refused
-                        : Color_Ticket.ref_String_Value_Status_Complete;
+                        ? Date_Ticket.ref_String_Value_Status_Refused
+                        : Date_Ticket.ref_String_Value_Status_Complete;
 
-                String ref_String_Processing_Refused_Reason = (ref_String_Processing_Result.equals(Color_Ticket.ref_String_Value_Status_Refused))
-                        ? Color_Ticket.ref_String_Value_Refused_Reason_Default
+                String ref_String_Processing_Refused_Reason = (ref_String_Processing_Result.equals(Date_Ticket.ref_String_Value_Status_Refused))
+                        ? Date_Ticket.ref_String_Value_Refused_Reason_Default
                         : null;
 
                 // -- Set
                 switch (ref_String_Processing_Result) {
 
-                    case Color_Ticket.ref_String_Value_Status_Complete:
+                    case Date_Ticket.ref_String_Value_Status_Complete:
 
                         // -- Set
-                        this.ref_Color_Ticket.setValue(Color_Ticket.ref_String_Key_Color, ref_String_Color);
-                        this.ref_Color_Ticket.setValue(Color_Ticket.ref_String_Key_Status, Color_Ticket.ref_String_Value_Status_Complete);
+                        this.ref_Date_Ticket.setValue(Date_Ticket.ref_String_Key_Color, ref_String_Color);
+                        this.ref_Date_Ticket.setValue(Date_Ticket.ref_String_Key_Status, Date_Ticket.ref_String_Value_Status_Complete);
 
                         break;
 
-                    case Color_Ticket.ref_String_Value_Status_Refused:
+                    case Date_Ticket.ref_String_Value_Status_Refused:
 
                         // -- Set
-                        this.ref_Color_Ticket.setValue(Color_Ticket.ref_String_Key_Refused_Reason, ref_String_Processing_Refused_Reason);
-                        this.ref_Color_Ticket.setValue(Color_Ticket.ref_String_Key_Status, Color_Ticket.ref_String_Value_Status_Refused);
+                        this.ref_Date_Ticket.setValue(Date_Ticket.ref_String_Key_Refused_Reason, ref_String_Processing_Refused_Reason);
+                        this.ref_Date_Ticket.setValue(Date_Ticket.ref_String_Key_Status, Date_Ticket.ref_String_Value_Status_Refused);
 
                         break;
                 }

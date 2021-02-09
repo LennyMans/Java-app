@@ -1,54 +1,31 @@
-package com.formation.tp.test;
+package com.formation.tp.Network;
 
-import java.net.*;
 import java.io.*;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-// -- Work
-        /*
-       1)  Connection au serveur suivant:
-         ip 216.58.213.132
-         port 80
 
-        2) envoyé via le flux ouput la commande "/getMyFuckingColor"
-
-        3) stocké la reponse du flux input dans un tableau de byte
-
-        4 ) convertir en tronquant et gardant que les 30 premiers byte
-
-        5) les trandormer en string
-
-        6) renvoyé la string
-
-         */
-
-public class TestSocket {
+public class Callable_Remote_GetDate implements Callable<String> {
 
     // -- CONS
-    public final static String ref_String_Command = "/getMyFuckingColor";
-    public final static Path ref_Path_File_Conf = FileSystems.getDefault().getPath("PERSISTANCE", "CONNECTION8CONFIGURATION.txt");
-
     String ref_String_Delimiter_Comma = ",";
     String ref_String_Delimiter_Equals = "=";
     String ref_String_Delimiter_Dot = "\\.";
 
     // -- VARS
-    private String ref_String_Hostname;
     private String ref_String_IP;
     private int ref_int_Port;
-    private byte[] ref_Byte_Array;
 
 
-    // -- CONSTRUCTOR ------------------------------------------------------------------------------
+    // -- CONSTRUCTOR ---------------------------------------------------------------
 
-    public TestSocket() {
+    public Callable_Remote_GetDate() {
 
         // -- Init
         this.load_Conf();
@@ -56,30 +33,30 @@ public class TestSocket {
     }
 
 
-    // -- INNER CALLBACK ---------------------------------------------------------------------------
+    // -- IMPLENTATION  ------------------------------------------------------------
+
+    @Override
+    public String call() throws Exception {
+
+        // -- Init & Work
+        StringBuffer ref_StringBuffer_Data_From_Google = this.get_Data_From_Google();
+
+        // -- Commit
+        return ref_StringBuffer_Data_From_Google.toString();
+
+    }
+
+    public static FutureTask<String> get_FutureTask_Execute_Resquest () {
+
+        return new FutureTask<String>(new Callable_Remote_GetDate());
+
+    }
+
+
+    // -- INNER CALLBACK ---------------------------------------------------------
 
     private void load_Conf(){
 
-    /*  this.ref_String_Hostname = "www.google.com";
-        this.ref_String_IP = "216.58.213.132";
-        this.ref_int_Port = 80;
-
-        1) Recuperer le flux du fichier suivante CONNECTION_CONFIGURATION.txt
-        2) Lire chaque ligne et extraite que celle qui respect le format KEY_IP=<IP>,KEY_PORT=<port>
-        3) On stockera les bonnes phrase dans une arrayList<String>
-        4) On prendra le premier venu qui est bon
-        5) On extrait les données
-        6) ont set les variables  this.ref_String_IP  et this.ref_int_Port avec
-        7) et la suite du programme suit sont cours
-
-
-        TIPS
-
-        // -- UTILS
-        public boolean verifyIp(String ip){}
-        public boolean verifyPort(String port){}
-
-        */
 
         // -- Vars
         ArrayList<String> ref_ArrayList_Data_Conf = new ArrayList<>();
@@ -124,7 +101,7 @@ public class TestSocket {
                 ref_Match = ref_Pattern.matcher(ref_String_Read_Line);
 
                 if (ref_Match.find() == Boolean.TRUE) {
-                    System.out.println("Regex okay");
+
 
                     // -- Log current line
                     //System.out.println(ref_String_Read_Line);
@@ -138,19 +115,15 @@ public class TestSocket {
                         ref_ArrayList_Data_Conf.add(ref_String_Read_Line);
                     }
 
-                } else {
-                    System.out.println("Regex : Nooope");
                 }
             }
 
             // -- Close buffer
             ref_Buffered_Reader_File_Conf.close();
 
-            // -- Log
-            System.out.println("Data conf contient : " + ref_ArrayList_Data_Conf);
 
         } catch (IOException ref_Exeception) {
-            System.out.println("ouuups, Il y a un problème");
+
             ref_Exeception.printStackTrace();
         }
 
@@ -225,46 +198,9 @@ public class TestSocket {
 
     }
 
-    private void persistInFile(StringBuffer ref_String_Buffer){
 
-        /*
-        1) Crée le repertoire a la racine du projet
-        2) Crée me fichier ds le repertoire
-        3) Ecrire les donnée reçu de google dedans
+    // -- UTILS ------------------------------------------------------------------
 
-         */
-
-        // -- Cons
-        String ref_String_File_ToPersist = "./PERSISTENCE/dataFromGoogle.txt";
-
-
-        // -- Init
-        File ref_File = new File(ref_String_File_ToPersist);
-
-        // Gestion de l'arboresence
-        ref_File.getParentFile().mkdirs();
-
-        // Create file
-        try {
-            ref_File.createNewFile();
-        } catch (IOException ref_Exception) {
-            ref_Exception.printStackTrace();
-        }
-
-        // Write data from google in the file
-        try {
-            FileWriter ref_File_Writer = new FileWriter(ref_File, Boolean.TRUE);
-            ref_File_Writer.write(ref_String_Buffer.toString());
-            ref_File_Writer.flush();
-
-        } catch (IOException ref_Exception) {
-            ref_Exception.printStackTrace();
-        }
-
-
-    }
-
-    // -- UTILS
     public boolean verifyIp(String ref_String_Ip_To_Check){
 
         // -- Cons
@@ -316,20 +252,15 @@ public class TestSocket {
 
         for(int u :  ref_Array_Int_Ip){
 
-            //System.out.println(u);
-
             if(u > 255  || u < 1) {
 
-                //System.out.println("Noooope");
                 ref_Boolean_isIpgood = false;
                 break;
 
-            } else {
-                //System.out.println("IP OK !");
             }
 
         }
-        System.out.println(ref_Boolean_isIpgood);
+
         return ref_Boolean_isIpgood;
     }
 
@@ -343,11 +274,6 @@ public class TestSocket {
         // Split
         ref_String_Array_Port = ref_String_Port_To_Check.split(ref_String_Delimiter_Equals);
 
-        // -- Log
-        for (String ref_String_Unit : ref_String_Array_Port) {
-            //System.out.println("Port = " + ref_String_Unit);
-        }
-
         // -- Get Port
         int ref_String_Port_Number = Integer.parseInt(ref_String_Array_Port[1]);
 
@@ -356,34 +282,14 @@ public class TestSocket {
 
         if(ref_String_Port_Number < 1  || ref_String_Port_Number > 1023) {
 
-            //System.out.println("Noooope");
             ref_Boolean_isPortGood = false;
 
             return false;
 
         } else {
 
-            //System.out.println("Port OK !");
-            System.out.println(ref_Boolean_isPortGood);
             return ref_Boolean_isPortGood;
         }
-    }
-
-
-
-    // -- MAIN -------------------------------------------------------------------------------------
-
-    public static void main(String[] args) {
-
-        // -- Init class
-        TestSocket ref_TestSocket = new TestSocket();
-
-        // -- Retrieve data from google
-        StringBuffer ref_StringBuffer_Data_From_Google = ref_TestSocket.get_Data_From_Google();
-
-        // -- Persist data in file system
-        ref_TestSocket.persistInFile(ref_StringBuffer_Data_From_Google);
-
     }
 
 

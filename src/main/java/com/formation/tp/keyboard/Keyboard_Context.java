@@ -1,14 +1,10 @@
 package com.formation.tp.keyboard;
 
-import com.formation.tp.color.Color_Context;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayDeque;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -205,9 +201,6 @@ public class Keyboard_Context {
 
              // -- Sleep
             Keyboard_Context.this.sleep(ref_Int_TimeToSleep_Engine);
-
-             // -- Log
-             System.err.println("ThreadEngine_KeyboardContext - IDLE");
 
              // -- LOOP START STOP
              while(ref_String_EngineStatus.equals(ref_String_Status_Stop) != Boolean.TRUE){
