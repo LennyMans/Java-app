@@ -23,7 +23,7 @@ public class TestDb {
         try {
 
             // -- Init
-            ref_Connexion = DriverManager.getConnection("JDBC_ref_Connexion_JNDI_PATH");
+            ref_Connexion = DriverManager.getConnection("jdbc:mariadb://localhost:3306/google_date?user=root&password=lenny1234");
             ref_Statement = ref_Connexion.createStatement();
             resultSet = ref_Statement.executeQuery(designedQuery);
             arrayListUnitQueryResponse = new ArrayList<String>();
@@ -51,13 +51,13 @@ public class TestDb {
             ref_Connexion.close();
 
 
-        } catch (SQLException e) {
-
+        } catch (SQLException ref_SQLException_a) {
+            ref_SQLException_a.printStackTrace();
             try {
 
                 if (ref_Connexion != null) { ref_Connexion.close(); }
 
-            } catch (SQLException ref_SQLException) {ref_SQLException.printStackTrace(); }
+            } catch (SQLException ref_SQLException_b) {ref_SQLException_b.printStackTrace(); }
         }
 
     }
