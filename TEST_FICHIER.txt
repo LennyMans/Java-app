@@ -1,2 +1,0 @@
-INSERT INTO google_date2 (date_retrieve) VALUES ('test2');
-select * from google_date2

@@ -65,7 +65,7 @@ public class Persistence_Context {
 
         // -- VARS
         Connection ref_Connexion = null;
-        Statement ref_Statement = null;
+        Statement ref_Statement;
 
         // -- Work
 
@@ -81,7 +81,10 @@ public class Persistence_Context {
 
 
         } catch (SQLException ref_SQLException_a) {
+
+            // -- Log
             ref_SQLException_a.printStackTrace();
+
             try {
 
                 if (ref_Connexion != null) { ref_Connexion.close(); }
