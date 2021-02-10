@@ -7,6 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
+
 public class Persistence_Context {
 
 
@@ -65,8 +66,6 @@ public class Persistence_Context {
         // -- VARS
         Connection ref_Connexion = null;
         Statement ref_Statement = null;
-        ResultSet resultSet = null;
-        ArrayList<String> arrayListUnitQueryResponse = null;
 
         // -- Work
 
@@ -75,7 +74,7 @@ public class Persistence_Context {
             // -- Init
             ref_Connexion = DriverManager.getConnection("jdbc:mariadb://localhost:3306/google_date?user=root&password=lenny1234");
             ref_Statement = ref_Connexion.createStatement();
-            resultSet = ref_Statement.executeQuery(ref_String_Builder_Query);
+            ref_Statement.executeQuery(ref_String_Builder_Query);
 
             // -- Close connection
             ref_Connexion.close();
@@ -101,6 +100,8 @@ public class Persistence_Context {
         Connection ref_Connexion = null;
         Statement ref_Statement = null;
         ResultSet resultSet = null;
+
+        // -- Parse result
         ArrayList<String> arrayListUnitQueryResponse = new ArrayList<>();
 
         // -- Work
@@ -148,5 +149,6 @@ public class Persistence_Context {
 
 
     }
+
 
 }

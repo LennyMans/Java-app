@@ -60,6 +60,8 @@ public class TestDb {
         Connection ref_Connexion = null;
         Statement ref_Statement = null;
         ResultSet resultSet = null;
+
+        // -- Parse les resultats du statment
         ArrayList<String> arrayListUnitQueryResponse = null;
 
         // -- Work
