@@ -163,9 +163,9 @@ public class UserInterface_Context {
         gbc.gridy = 0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.gridheight = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0;
-        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
         gbc.anchor = GridBagConstraints.CENTER;
 
         ref_Jpanel_Dashboard.add( ref_Jpanel_Container_A, gbc);
@@ -180,13 +180,12 @@ public class UserInterface_Context {
         gbc.gridy = 0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.gridheight= GridBagConstraints.REMAINDER;
-
         gbc.weightx = 0;
         gbc.weighty = 0;
         
         
-        ref_Jpanel_Container_A.add(ref_JscrollPane);
-        ref_Jpanel_Container_B.add(ref_Jbutton);
+        ref_Jpanel_Container_A.add(ref_JscrollPane, gbc);
+        ref_Jpanel_Container_B.add(ref_Jbutton, gbc);
         
 
     }
@@ -200,14 +199,8 @@ public class UserInterface_Context {
         ref_Jframe.pack();
 
 
-        int px= ref_Jframe.getX();
-        int py= ref_Jframe.getY();
-        int x = px + (ref_Jframe.getWidth()/2) - (ref_Jframe.getWidth()/2);
-        int y= py + (ref_Jframe.getHeight()/2) - (ref_Jframe.getHeight()/2);
-
-        ref_Jframe.setLocation(x, y);
         ref_Jframe.setVisible(true);
-        ref_Jframe.setResizable(false);
+        ref_Jframe.setResizable(true);
 
     }
 
@@ -355,4 +348,6 @@ public class UserInterface_Context {
 
 
     }
+
+
 }

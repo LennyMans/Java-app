@@ -1,6 +1,6 @@
 package com.formation.tp.app;
 
-import com.formation.tp.Network.Callable_Remote_GetDate;
+
 import com.formation.tp.Perrsistence.Persistence_Context;
 import com.formation.tp.UserInterface.UserInterface_Context;
 import com.formation.tp.date.Date_Context;
