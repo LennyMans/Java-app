@@ -1,5 +1,8 @@
 
 
-1) Ajouter un boutton pour persister en db ce qu'on voit a l'ecran (vider l'ecran au passage)
+1) Ajouter un boutton pour persister en db ce qu'on voit a l'ecran (vider l'ecran au passage) ==> Done
 
-2) Ajout un boutton pour afficher dans le text area tout ce qu'on a en db
+2) Ajout un boutton pour afficher dans le text area tout ce qu'on a en db ==>
+
+Voir avec Julien : Il faut parfois appuyer 2 fois sur le bouton pour que l'action se déclanche ? COmment pourrait-on améliorer le système
+

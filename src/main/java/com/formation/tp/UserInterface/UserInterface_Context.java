@@ -7,9 +7,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+
 
 public class UserInterface_Context {
     
@@ -24,7 +26,8 @@ public class UserInterface_Context {
 
     public final static Color COLOR_BUTTON__HEADER = new Color(161, 161, 161);
     public final static Color COLOR_BUTTON__HEADER_HL = new Color(191, 191, 191);
-    
+
+
     // -- REFS
     JFrame ref_Jframe;
         JPanel ref_Jpanel_Dashboard;
@@ -33,6 +36,8 @@ public class UserInterface_Context {
                 JTextArea ref_JtextArea;
             JPanel ref_Jpanel_Container_B;
                 JButton ref_Jbutton;
+                JButton ref_Jbutton_Persist_Db;
+                JButton ref_Jbutton_Show_Db_Data;
     
                 
                 
@@ -138,7 +143,12 @@ public class UserInterface_Context {
             this.ref_Jbutton.setMaximumSize(new Dimension(120,35));
             this.ref_Jbutton.addMouseListener(new MouseListener_GetDate());
             this.ref_Jbutton.addMouseListener(new ChangeButtonColourListener());
-            
+
+        this.ref_Jbutton_Persist_Db = new JButton("Persist data in db");
+            this.ref_Jbutton_Persist_Db.addMouseListener(new MouseListener_Persist_Db());
+
+        this.ref_Jbutton_Show_Db_Data = new JButton("Show data in db");
+            this.ref_Jbutton_Show_Db_Data.addMouseListener(new MouseListener_Show_Db_Data());
 /*
             MouseListener[] ref_Array_MousListener =  this.ref_Jbutton.getMouseListeners();
             
@@ -185,8 +195,26 @@ public class UserInterface_Context {
         
         
         ref_Jpanel_Container_A.add(ref_JscrollPane, gbc);
+
+        // -- Set pane b inner
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        gbc.gridheight= GridBagConstraints.REMAINDER;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+
+        // -- Btn 1
+        gbc.gridx = 0;
         ref_Jpanel_Container_B.add(ref_Jbutton, gbc);
-        
+
+        // -- Btn 2
+        gbc.gridx = 5;
+        ref_Jpanel_Container_B.add(ref_Jbutton_Persist_Db, gbc);
+
+        // -- Btn 3
+        gbc.gridx = 10;
+        ref_Jpanel_Container_B.add(ref_Jbutton_Show_Db_Data, gbc);
 
     }
     
@@ -215,6 +243,17 @@ public class UserInterface_Context {
 
         });
 
+    }
+
+    public void commit_DB (ArrayList<String> ref_ArrayList_Content) {
+        for (String ref_String_Db_Data_Unit : ref_ArrayList_Content) {
+
+            SwingUtilities.invokeLater(()->{
+
+                this.ref_JtextArea.append(ref_String_Db_Data_Unit);
+
+            });
+        }
     }
 
 
@@ -349,5 +388,94 @@ public class UserInterface_Context {
 
     }
 
+    class MouseListener_Persist_Db implements MouseListener {
+
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+            // -- Get the contents of the JTextArea component.
+            String ref_String_Content = ref_JtextArea.getText();
+
+            // -- Split all string content into list
+            String [] ref_String_Array_Content = ref_String_Content.split("\n");
+            ArrayList<String> ref_ArrayList_Content = new ArrayList<String>();
+
+            for (String ref_String_Line : ref_String_Array_Content) {
+                // -- Log
+                System.out.println(ref_String_Line);
+
+                // -- Commit in DB
+                ref_ArrayList_Content.add(ref_String_Line);
+            }
+
+            // -- Loop into ArrayList and call insert method
+            for (String ref_String_Unit : ref_ArrayList_Content) {
+
+                // -- Work
+                Master_Context.ref_Persistence_Context.insert(ref_String_Unit);
+            }
+
+            // -- Clear Jtexarea
+            ref_JtextArea.selectAll();
+            ref_JtextArea.replaceSelection("");
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    }
+
+    class MouseListener_Show_Db_Data implements MouseListener {
+
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+            // Get content from database and set content into Jtexarea
+            for (String ref_String_Line : Master_Context.ref_Persistence_Context.select()) {
+                System.out.println(ref_String_Line);
+                ref_JtextArea.append(ref_String_Line + "\n");
+            }
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    }
 
 }
