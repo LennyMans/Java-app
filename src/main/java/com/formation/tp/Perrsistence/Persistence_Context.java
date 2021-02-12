@@ -5,10 +5,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 
 public class Persistence_Context {
+
+    // -- REF
+    public static final ExecutorService ref_ExecutorService = Executors.newSingleThreadExecutor();
+
 
 
     // -- CALL BACK -------------------------------------------------------
@@ -152,6 +159,7 @@ public class Persistence_Context {
 
 
     }
+
 
 
 }

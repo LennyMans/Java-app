@@ -1,6 +1,7 @@
 package com.formation.tp.UserInterface;
 
 import com.formation.tp.Network.Callable_Remote_GetDate;
+import com.formation.tp.Perrsistence.Persistence_Context;
 import com.formation.tp.app.Master_Context;
 
 import javax.swing.*;
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 
 public class UserInterface_Context {
@@ -137,6 +140,7 @@ public class UserInterface_Context {
       
        this.ref_Jbutton = new JButton("Get a date");
             this.ref_Jbutton.setFont(new Font("Lato", Font.PLAIN, 13));
+            this.ref_Jbutton.setBackground(COLOR_PRIMARY);
             this.ref_Jbutton.setBorder(BorderFactory.createEmptyBorder());
             this.ref_Jbutton.setPreferredSize(new Dimension(120,30));
             this.ref_Jbutton.setMinimumSize(new Dimension(120,35));
@@ -145,9 +149,11 @@ public class UserInterface_Context {
             this.ref_Jbutton.addMouseListener(new ChangeButtonColourListener());
 
         this.ref_Jbutton_Persist_Db = new JButton("Persist data in db");
+        this.ref_Jbutton_Persist_Db.setBackground(COLOR_PRIMARY);
             this.ref_Jbutton_Persist_Db.addMouseListener(new MouseListener_Persist_Db());
 
         this.ref_Jbutton_Show_Db_Data = new JButton("Show data in db");
+        this.ref_Jbutton_Show_Db_Data.setBackground(COLOR_PRIMARY);
             this.ref_Jbutton_Show_Db_Data.addMouseListener(new MouseListener_Show_Db_Data());
 /*
             MouseListener[] ref_Array_MousListener =  this.ref_Jbutton.getMouseListeners();
@@ -199,22 +205,25 @@ public class UserInterface_Context {
         // -- Set pane b inner
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 3;
+        gbc.gridwidth =1;
         gbc.gridheight= GridBagConstraints.REMAINDER;
         gbc.weightx = 0;
         gbc.weighty = 0;
 
         // -- Btn 1
         gbc.gridx = 0;
+        gbc.gridheight= 1;
         ref_Jpanel_Container_B.add(ref_Jbutton, gbc);
 
         // -- Btn 2
-        gbc.gridx = 5;
+        gbc.gridx = 1;
         ref_Jpanel_Container_B.add(ref_Jbutton_Persist_Db, gbc);
 
         // -- Btn 3
-        gbc.gridx = 10;
+        gbc.gridx = 2;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
         ref_Jpanel_Container_B.add(ref_Jbutton_Show_Db_Data, gbc);
+
 
     }
     
@@ -246,6 +255,7 @@ public class UserInterface_Context {
     }
 
     public void commit_DB (ArrayList<String> ref_ArrayList_Content) {
+
         for (String ref_String_Db_Data_Unit : ref_ArrayList_Content) {
 
             SwingUtilities.invokeLater(()->{
@@ -390,35 +400,104 @@ public class UserInterface_Context {
 
     class MouseListener_Persist_Db implements MouseListener {
 
-
         @Override
         public void mouseClicked(MouseEvent e) {
 
+            // -- Disable input de l'ui
+            ref_Jframe.setEnabled(Boolean.FALSE);
+
             // -- Get the contents of the JTextArea component.
-            String ref_String_Content = ref_JtextArea.getText();
+            final String ref_String_Content = ref_JtextArea.getText();
 
-            // -- Split all string content into list
-            String [] ref_String_Array_Content = ref_String_Content.split("\n");
-            ArrayList<String> ref_ArrayList_Content = new ArrayList<String>();
+            // -- Set button
+            final AtomicBoolean ref_AtomicBoolean_IsProcessed = new AtomicBoolean(Boolean.FALSE);
 
-            for (String ref_String_Line : ref_String_Array_Content) {
-                // -- Log
-                System.out.println(ref_String_Line);
+            // -- Animation
+            Runnable ref_Runnable_Animation = new Runnable() {
+                @Override
+                public void run() {
 
-                // -- Commit in DB
-                ref_ArrayList_Content.add(ref_String_Line);
-            }
+                    String [] ref_Array_Sting = {
+                            "Wait plz"
+                            ,"Wait plz."
+                            ,"Wait plz.."
+                            ,"Wait plz..."
+                            ,"Wait plz...."
+                            ,"Wait plz....."};
 
-            // -- Loop into ArrayList and call insert method
-            for (String ref_String_Unit : ref_ArrayList_Content) {
 
-                // -- Work
-                Master_Context.ref_Persistence_Context.insert(ref_String_Unit);
-            }
+                   for(int ref_Int_Offset_A = 0 ; ref_AtomicBoolean_IsProcessed.get() == Boolean.FALSE; ref_Int_Offset_A++){
 
-            // -- Clear Jtexarea
-            ref_JtextArea.selectAll();
-            ref_JtextArea.replaceSelection("");
+                       final String ref_String_TextButton =ref_Array_Sting[ref_Int_Offset_A % ref_Array_Sting.length];
+
+
+                       SwingUtilities.invokeLater(()-> ref_Jbutton_Persist_Db.setText(ref_String_TextButton ));
+
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException interruptedException) {
+                            interruptedException.printStackTrace();
+                        }
+
+                    }
+
+                }
+            };
+            new Thread(ref_Runnable_Animation).start();
+
+
+            // -- Encapsule
+            Runnable ref_Runnale_ToExecute = new Runnable() {
+                @Override
+                public void run() {
+
+                    // -- Split all string content into list
+                    String [] ref_String_Array_Content = ref_String_Content.split("\n");
+                    ArrayList<String> ref_ArrayList_Content = new ArrayList<String>();
+
+                    for (String ref_String_Line : ref_String_Array_Content) {
+                        // -- Log
+                        System.out.println(ref_String_Line);
+
+                        // -- Commit in DB
+                        ref_ArrayList_Content.add(ref_String_Line);
+                    }
+
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
+                    // -- Loop into ArrayList and call insert method
+                    for (String ref_String_Unit : ref_ArrayList_Content) {
+
+                        // -- Work
+                        Master_Context.ref_Persistence_Context.insert(ref_String_Unit);
+                    }
+
+                    ref_AtomicBoolean_IsProcessed.set(Boolean.TRUE);
+
+                            // -- Build update ui
+                            Runnable ref_Runnable_Ui = new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    // -- Clear Jtexarea
+                                    ref_JtextArea.selectAll();
+                                    ref_JtextArea.replaceSelection("");
+                                    ref_Jbutton_Persist_Db.setText("Persist data in db");
+                                    ref_Jframe.setEnabled(Boolean.TRUE);
+                                }
+                            };
+
+                            // -- Commit UI
+                            SwingUtilities.invokeLater(ref_Runnable_Ui);
+                }
+            };
+
+
+            // -- Start treatment
+            Persistence_Context.ref_ExecutorService.execute(ref_Runnale_ToExecute);
 
         }
 
@@ -450,10 +529,23 @@ public class UserInterface_Context {
         public void mouseClicked(MouseEvent e) {
 
             // Get content from database and set content into Jtexarea
-            for (String ref_String_Line : Master_Context.ref_Persistence_Context.select()) {
-                System.out.println(ref_String_Line);
-                ref_JtextArea.append(ref_String_Line + "\n");
-            }
+            Runnable ref_Runnable_ShowBd = new Runnable() {
+                @Override
+                public void run() {
+
+                    // -- Get list
+                    ArrayList<String> ref_ArrayList = Master_Context.ref_Persistence_Context.select();
+
+                    // -- Consat List
+                    String ref_String = ref_ArrayList.stream().collect(Collectors.joining("\n"));
+
+                    // -- Commit
+                    SwingUtilities.invokeLater(()-> ref_JtextArea.append(ref_String + "\n"));
+                }
+            };
+
+            // -- Execute
+            Persistence_Context.ref_ExecutorService.execute(ref_Runnable_ShowBd);
 
         }
 
